@@ -2,47 +2,76 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from models import find_user_by_username
+from models import User
+from extensions import db
 
-auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
+auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/')
-def home():
-    """Renderiza a página de login."""
-    # Se o usuário já estiver logado, redireciona para a home page
+def index():
+    """Redireciona para a página de login."""
+    return redirect(url_for('auth.login'))
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    """Renderiza a página de login e processa a autenticação."""
     if current_user.is_authenticated:
         return redirect(url_for('auth.home_page'))
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Procura o usuário no banco de dados
+        user = User.query.filter_by(username=username).first()
+
+        # Verifica se o usuário existe e se a senha está correta
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for('auth.home_page'))
+        else:
+            flash('Usuário ou senha inválidos.', 'danger')
+
     return render_template('login.html')
 
-@auth_bp.route('/login', methods=['POST'])
-def login():
-    """Processa a tentativa de login."""
-    username = request.form.get('username')
-    password = request.form.get('password')
-    user = find_user_by_username(username)
-
-    if user and user.password == password:
-        # A função login_user registra o usuário como logado
-        login_user(user)
-        flash('Login realizado com sucesso!', 'success')
-        # Redireciona para a nova rota '/home'
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    """Renderiza a página de registro e cria novos usuários."""
+    if current_user.is_authenticated:
         return redirect(url_for('auth.home_page'))
-    else:
-        flash('Usuário ou senha inválidos.', 'danger')
-        return redirect(url_for('auth.home'))
 
-# --- Novas Rotas ---
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Verifica se o usuário já existe
+        if User.query.filter_by(username=username).first():
+            flash('Este nome de usuário já está em uso. Por favor, escolha outro.', 'warning')
+            return redirect(url_for('auth.register'))
+        
+        # Cria um novo usuário
+        new_user = User(username=username)
+        new_user.set_password(password) # Criptografa a senha
+
+        # Adiciona ao banco de dados
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Conta criada com sucesso! Por favor, faça o login.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('register.html')
+
 
 @auth_bp.route('/home')
-@login_required # Este decorador protege a rota
+@login_required
 def home_page():
     """Renderiza a home page, acessível apenas para usuários logados."""
     return render_template('home.html')
 
 @auth_bp.route('/logout')
-@login_required # Usuário precisa estar logado para deslogar
+@login_required
 def logout():
     """Processa o logout do usuário."""
     logout_user()
-    flash('Você foi desconectado.', 'info')
-    return redirect(url_for('auth.home'))
+    return redirect(url_for('auth.login'))

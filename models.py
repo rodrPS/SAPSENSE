@@ -1,34 +1,30 @@
 # models.py
 
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from extensions import db, login_manager
 
-# Nossa classe User agora herda de UserMixin para ser compatível com o Flask-Login
-class User(UserMixin):
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
+class User(UserMixin, db.Model):
+    __tablename__ = 'users' # Nome da tabela no banco de dados
 
-    # Flask-Login usa o método get_id(), que UserMixin já implementa
-    # usando o atributo 'id' que definimos.
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, nullable=False, index=True)
+    password_hash = db.Column(db.String(256), nullable=False)
+
+    def set_password(self, password):
+        """Cria um hash da senha e o armazena."""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Verifica se a senha fornecida corresponde ao hash armazenado."""
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return f'<User: {self.username}>'
+        return f'<User {self.username}>'
 
-# Simulação de um banco de dados de usuários
-# Em um projeto real, isso viria de um banco de dados
-users_db = {
-    "1": User(id="1", username='admin', password='senha123'),
-    "2": User(id="2", username='saps', password='sense')
-}
-
-def find_user_by_username(username):
-    """Função auxiliar para encontrar um usuário pelo nome."""
-    for user in users_db.values():
-        if user.username == username:
-            return user
-    return None
-
-def find_user_by_id(user_id):
-    """Função auxiliar para encontrar um usuário pelo ID."""
-    return users_db.get(user_id)
+# O user_loader é movido para cá para ficar junto do modelo User.
+# Ele informa ao Flask-Login como encontrar um usuário específico a partir do ID
+# que é armazenado em sua sessão.
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

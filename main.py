@@ -1,36 +1,30 @@
 # main.py
 
 from flask import Flask
-from flask_login import LoginManager
+from config import Config
+from extensions import db, migrate, login_manager
 from routes import auth_bp
-from models import find_user_by_id
+import models # Apenas importe o módulo para que o SQLAlchemy reconheça os modelos
 
 def create_app():
     """Cria e configura uma instância da aplicação Flask."""
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'uma-chave-secreta-muito-segura'
+    app.config.from_object(Config)
 
-    # --- Configuração do Flask-Login ---
-    login_manager = LoginManager()
+    # --- Inicializa as extensões com a aplicação ---
+    db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    # Define a view para a qual usuários não logados são redirecionados.
-    # 'auth.home' é o nome da função da nossa rota de login ('/').
-    login_manager.login_view = 'auth.home'
-    
-    # Mensagem customizada para o redirecionamento
+    # Define a view de login para o LoginManager
+    login_manager.login_view = 'auth.login'
     login_manager.login_message = "Por favor, faça o login para acessar esta página."
     login_manager.login_message_category = "info"
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        """
-        Esta função é usada pelo Flask-Login para carregar um usuário
-        a partir do ID armazenado na sessão.
-        """
-        return find_user_by_id(user_id)
+    # O DECORADOR @login_manager.user_loader NÃO FICA MAIS AQUI.
+    # Ele foi movido para o arquivo models.py.
 
-    # Registra o Blueprint na aplicação
+    # Registra o Blueprint
     app.register_blueprint(auth_bp)
 
     return app
