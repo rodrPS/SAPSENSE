@@ -1,53 +1,15 @@
-/* Configurações Globais e de Fonte */
-body, html {
+@import url('./variables.css');
+
+* {
     margin: 0;
     padding: 0;
-    height: 100%;
     font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5;
+    box-sizing: border-box;
 }
 
-/* Container Principal */
-.login-container {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-}
-
-/* Lado Esquerdo - Imagem de Fundo */
-.login-background {
-    flex: 1;
-    background-image: url('../img/background.png');
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-/* Lado Direito - Área do Formulário */
-.login-form-area {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff;
-}
-
-.form-wrapper {
-    width: 80%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Logo */
-.logo-container {
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.logo-container img {
-    max-width: 180px; /* Ajuste o tamanho conforme necessário */
+html, body{
+    min-height: 100vh;
+    background-color: var(--cinza-100);
 }
 
 /* Formulário e Campos */
@@ -64,18 +26,20 @@ form {
     display: block;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #333;
+    color: var(--preto-500);
     margin-bottom: 0.5rem;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    box-sizing: border-box; /* Garante que padding não afete a largura total */
+    padding: 16px;
+    border: 1px solid var(--preto-100);
+    border-radius: 16px;
+    font-size: 16px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    background-color: var(--cinza-100);
 }
 
 .form-group input::placeholder {
@@ -87,55 +51,206 @@ form {
     border-color: #2980b9;
 }
 
-/* Link "Esqueceu a senha" */
-.forgot-password {
-    text-align: right;
-    margin-bottom: 1.5rem;
-}
-
-.forgot-password a {
-    font-size: 0.85rem;
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.forgot-password a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
-/* Botão de Login */
-.btn-login {
-    width: 100%;
+.flash-container{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
     padding: 15px;
-    background-color: #007bff;
+    background-color: #f8d7da;
+    color: var(--vermelho-500);
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.flash-container .flash-content {
+    display: flex;
+    align-items: center;
+    background-color: none;
+}
+
+.btn-primary {
+    background-color: var(--azul-500);
+    color: var(--white);
     border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 1.1rem;
+    padding: 12px 40px;
+    font-size: 16px;
     font-weight: 600;
+    border-radius: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s ease-in-out;
 }
 
-.btn-login:hover {
-    background-color: #0056b3;
+.btn-primary:hover {
+    background-color: var(--azul-600);
 }
 
-/* Responsividade para telas menores */
+
+/* Navbar */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  background-color: var(--white);
+}
+
+.navbar-logo img {
+  height: 40px;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: #0f172a;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.navbar-links li a.active {
+  background-color: var(--azul-100);
+  color: var(--azul-900);
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatar-fallback {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-transform: uppercase;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.dropdown-icon {
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 48px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 120px;
+  z-index: 999;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f0f0f0;
+}
+
+.navbar-toggle {
+  display: none;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.checkbox-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+}
+
+.text-danger{
+    color: var(--vermelho-500);
+}
+
+.hidden {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
-    .login-container {
-        flex-direction: column;
-    }
+  .navbar {
+    flex-wrap: wrap;
+    padding: 16px 24px;
+  }
 
-    .login-background {
-        flex: 0; /* Oculta a imagem de fundo em telas pequenas */
-        display: none;
-    }
+  .navbar-toggle {
+    display: block;
+    margin-left: auto;
+  }
 
-    .login-form-area {
-        flex: 1;
-        padding: 2rem;
-    }
+  .navbar-links {
+    width: 100%;
+    flex-direction: column;
+    display: none;
+    margin-top: 16px;
+    gap: 12px;
+  }
+
+  .navbar-links.show {
+    display: flex;
+  }
+
+  .navbar-user {
+    width: 100%;
+    margin-top: 16px;
+    justify-content: flex-start;
+  }
 }

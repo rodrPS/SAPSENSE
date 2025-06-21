@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SAPS sense{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="home-content">
+    <h1>Bem-vindo(a), {{ current_user.username }}!</h1>
+    <p>Esta é a sua página principal. Você está autenticado.</p>
+    <a href="{{ url_for('auth.logout') }}">Sair (Logout)</a>
+</div>
+{% endblock %}

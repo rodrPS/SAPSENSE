@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Resumo dos Dados</h2>
+<ul>
+  {% for chave, valor in dados.items() %}
+    <li><strong>{{ chave }}:</strong> {{ valor }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

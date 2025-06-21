@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Formulário do SAPS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sapsForm.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <header class="form-header">
+        <h1>Formulário do SAPS</h1>
+        <div class="form-progress">
+            <div class="form-progress-bar" style="width: 25%;"></div>
+        </div>
+        <p class="form-step-title">Identificação</p>
+    </header>
+
+    <form method="POST" class="form-step">
+        {{ form.hidden_tag() }}
+
+        <!-- CARD 1 -->
+        <div class="form-card">
+            <div class="form-group">
+                {{ form.cpf.label }}
+                {{ form.cpf(class_="form-control", placeholder="Insira o CPF (somente números)") }}
+                {% for error in form.cpf.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.nome.label }}
+                {{ form.nome(class_="form-control", placeholder="Insira o nome do paciente") }}
+                {% for error in form.nome.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.data_nascimento.label }}
+                {{ form.data_nascimento(class_="form-control", placeholder="00/00/0000") }}
+                {% for error in form.data_nascimento.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="form-card">
+            <div class="form-group">
+                {{ form.leito.label }}
+                {{ form.leito(class_="form-control") }}
+                {% for error in form.leito.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.procedencia.label }}
+                {{ form.procedencia(class_="form-control") }}
+                {% for error in form.procedencia.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CARD 3 -->
+
+        <div class="form-card">
+            <div class="form-group">
+                {{ form.data_admissao.label }}
+                {{ form.data_admissao(class_="form-control", placeholder="00/00/0000") }}
+                {% for error in form.data_admissao.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.registro.label }}
+                {{ form.registro(class_="form-control", placeholder="Número de registro") }}
+                {% for error in form.registro.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.reinternacao.label.text }}</p>
+                {% for subfield in form.reinternacao %}
+                    <label class="custom-radio">
+                        {{ subfield() }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+                {% for error in form.reinternacao.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn-primary">Continuar</button>
+        </div>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/sapsForm1.js') }}"></script>
+{% endblock %}

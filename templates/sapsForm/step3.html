@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Formulário do SAPS - Etapa 3{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sapsForm.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <header class="form-header">
+        <h1>Formulário do SAPS</h1>
+        <div class="form-progress">
+            <div class="form-progress-bar" style="width: 75%;"></div>
+        </div>
+        <p class="form-step-title">Quadro II – Motivo da Admissão, Cirurgia e Infecção</p>
+    </header>
+
+    <form method="POST" class="form-step">
+        {{ form.hidden_tag() }}
+
+        <!-- CARD 1: Admissão Planejada -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.admissao_planejada.label.text }}</p>
+                {% for error in form.admissao_planejada.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+                {% for subfield in form.admissao_planejada %}
+                    <label class="custom-radio">
+                        {{ subfield() }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CARD 2: Motivos de Admissão -->
+        <div class="form-card col">
+            <label>{{ form.motivos_admissao.label }}</label>
+            {% for error in form.motivos_admissao.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+            <div class="checkbox-grid-2col">
+                {% for subfield in form.motivos_admissao %}
+                    <label class="custom-checkbox">
+                        {{ subfield(required=False) }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CARD 3: Cirurgia -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.cirurgia_realizada.label.text }}</p>
+                {% for error in form.cirurgia_realizada.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+                {% for subfield in form.cirurgia_realizada %}
+                <label class="custom-radio">
+                    {{ subfield(id=subfield.id, onchange="toggleCamposCirurgia()" ) }} {{ subfield.label.text }}
+                </label>
+                {% endfor %}
+            </div>
+            <div class="form-group-row" id="cirurgia-campos">
+                <div class="form-group">
+                {{ form.tipo_cirurgia.label }}
+                {% for error in form.tipo_cirurgia.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+                {{ form.tipo_cirurgia(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                {{ form.sitio_atomico.label }}
+                {% for error in form.sitio_atomico.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+                {{ form.sitio_atomico(class_="form-control") }}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- CARD 4: Infecção -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.infeccao_aguda.label.text }}</p>
+                {% for error in form.infeccao_aguda.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+                {% for subfield in form.infeccao_aguda %}
+                    <label class="custom-radio">
+                        {{ subfield(id = subfield.id, onchange="toggleCampoInfeccao()") }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+            </div>
+            <div id="infeccao-campo">
+                <div class="form-group">
+                    {{ form.tipo_infeccao.label }}
+                    {% for error in form.tipo_infeccao.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                    {{ form.tipo_infeccao(class_="form-control") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão -->
+        <div class="form-footer">
+            <button type="submit" class="btn-primary">Próxima Etapa</button>
+        </div>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/sapsForm3.js') }}"></script>
+
+{% endblock %}
