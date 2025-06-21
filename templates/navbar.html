@@ -1,21 +1,31 @@
+{% set path = request.path %}
+
 <nav class="navbar">
   <div class="navbar-logo">
-    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="SAPS sense logo">
+    <a href="{{ url_for('auth.home_page') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="SAPS sense logo">
+    </a>
   </div>
 
   <button class="navbar-toggle" onclick="toggleMobileMenu()">☰</button>
 
   <ul class="navbar-links" id="navbar-links">
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Pacientes</a></li>
-    <li><a href="#" class="active">Administração</a></li>
+    <li>
+      <a href="{{ url_for('auth.home_page') }}" class="{% if path == '/' or path.startswith('/home') %}active{% endif %}">Home</a>
+    </li>
+    <li>
+      <a href="{{ url_for('auth.lista_pacientes') }}" class="{% if path.startswith('/pacientes') %}active{% endif %}">Pacientes</a>
+    </li>
+    <li>
+      <a href="{{ url_for('auth.admin') }}" class="{% if path.startswith('/admin') %}active{% endif %}">Administração</a>
+    </li>
   </ul>
 
   <div class="navbar-user" onclick="toggleDropdown()">
     <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-avatar" alt="Usuário">
     <div class="user-info">
-      <strong>André Fontes</strong>
-      <small>andre@fontes.com.br</small>
+      <strong>User Name</strong>
+      <small>{{ current_user.username }}</small>
     </div>
     <div class="dropdown-icon">▼</div>
 
@@ -24,5 +34,3 @@
     </div>
   </div>
 </nav>
-
-<script src="{{ url_for('static', filename='js/navbar.js') }}"></script>

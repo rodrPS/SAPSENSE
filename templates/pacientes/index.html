@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Pacientes{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pacientes.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="pacientes-container">
+    <header class="pacientes-header">
+        <h1>Pacientes</h1>
+        <a href="{{ url_for('auth.saps_form') }}" class="btn-primary">Preencher SAPS 3</a>
+    </header>
+
+    <div class="stats-cards">
+        <div class="card">
+            <h1>{{ internacoes_paginated.total }}</h1>
+            <p>Total</p>
+        </div>
+        <div class="card">
+            <h1>{{ internacoes_paginated.total }}</h1>
+            <p>Ocupados</p>
+        </div>
+        <div class="card">
+            <h1>{{ 20 - internacoes_paginated.total }}</h1>
+            <p>Disponíveis</p>
+        </div>
+    </div>
+
+    <div class="search-box">
+        <input type="text" placeholder="Buscar Paciente">
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Leito</th>
+                    <th>Nome</th>
+                    <th>Responsável</th>
+                    <th>Internado(a) em</th>
+                    <th>Resultado SAPS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in internacoes_paginated.items %}
+                <tr>
+                    <td>{{ i.leito }}</td>
+                    <td>{{ i.paciente.nome }}</td>
+                    <td>
+                    {% if i.responsavel %}
+                        {{ i.responsavel }}
+                        <button onclick="abrirModal('{{ i.id }}')">✏️</button>
+                    {% else %}
+                        <button class="btn-primary atribuir" onclick="abrirModal('{{ i.id }}')">Atribuir</button>
+                    {% endif %}
+                    </td>
+                    <td>{{ i.data_admissao.strftime('%d/%m/%Y') }}</td>
+                    <td class="{% if i.saps_resultado and i.saps_resultado < 30 %}danger{% endif %}">
+                        {{ i.saps_resultado or '80 (80%)' }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {% if internacoes_paginated.has_prev %}
+                <a href="{{ url_for('auth.lista_pacientes', page=internacoes_paginated.prev_num) }}">Anterior</a>
+            {% endif %}
+            {% for p in range(1, internacoes_paginated.pages + 1) %}
+                <a href="{{ url_for('auth.lista_pacientes', page=p) }}" class="{% if p == internacoes_paginated.page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+            {% if internacoes_paginated.has_next %}
+                <a href="{{ url_for('auth.lista_pacientes', page=internacoes_paginated.next_num) }}">Próximo</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="modalResponsavel" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Atribuir Responsável</h3>
+    <input type="text" id="nomeResponsavel" placeholder="Nome completo do responsável">
+    <input type="hidden" id="internacaoId">
+    <div class="modal-actions">
+      <button onclick="fecharModal()" class="btn-secondary">Cancelar</button>
+      <button onclick="salvarResponsavel()" class="btn-primary">Salvar</button>
+    </div>
+    <p id="erroModal" style="color:red;"></p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/pacientes.js') }}"></script>
+{% endblock %}

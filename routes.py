@@ -1,11 +1,11 @@
 # routes.py
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect
-from formSaps import Step1Form, Step2Form, Step3Form, Step4Form
+from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
 from datetime import datetime
-
+from sqlalchemy import asc
 from models import User, Paciente, Internacao
 from extensions import db
 
@@ -179,9 +179,42 @@ def resumo():
 
     return render_template('sapsForm/resultado.html', dados=dados)
 
+@auth_bp.route('/pacientes')
+@login_required
+def lista_pacientes():
+    page = request.args.get('page', 1, type=int)
+
+    internacoes_paginated = Internacao.query.filter_by(data_desfecho=None).paginate(page=page, per_page=10)
+
+    return render_template('pacientes/index.html', internacoes_paginated=internacoes_paginated)
+
+@auth_bp.route('/atribuir-responsavel', methods=['POST'])
+@login_required
+def atribuir_responsavel():
+    data = request.get_json()
+    internacao_id = data.get('id')
+    nome = data.get('responsavel')
+
+    if not nome or len(nome.strip().split()) < 2:
+        return jsonify({'success': False, 'message': 'Nome inválido. Informe nome e sobrenome.'}), 400
+
+    internacao = Internacao.query.get(internacao_id)
+    if not internacao:
+        return jsonify({'success': False, 'message': 'Internação não encontrada.'}), 404
+
+    internacao.responsavel = nome.strip()
+    db.session.commit()
+    return jsonify({'success': True})
+
+@auth_bp.route('/admin')
+@login_required
+def admin():
+    return render_template('home/index.html')
+
 @auth_bp.route('/logout')
 @login_required
 def logout():
     """Processa o logout do usuário."""
     logout_user()
     return redirect(url_for('auth.login'))
+

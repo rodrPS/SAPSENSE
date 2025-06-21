@@ -75,6 +75,11 @@ class Internacao(db.Model):
     plaquetas = db.Column(db.String(50), nullable=False)
     oxigenacao = db.Column(db.String(50), nullable=False)
 
+    responsavel = db.Column(db.String(120), nullable=True)
+    desfecho = db.Column(db.String(120), nullable=True)
+    data_desfecho = db.Column(db.Date, nullable=True)
+    destino = db.Column(db.String(120), nullable=True)
+
     def __repr__(self):
         return f"<Internacao {self.id} - Paciente {self.paciente_id}>"
 
