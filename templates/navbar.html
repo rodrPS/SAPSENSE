@@ -22,9 +22,9 @@
   </ul>
 
   <div class="navbar-user" onclick="toggleDropdown()">
-    <img src="{{ url_for('static', filename='img/user.jpg') }}" class="user-avatar" alt="Usuário">
+    <img src="{{ url_for('static', filename='opload/user.jpg') }}" class="user-avatar" alt="Usuário">
     <div class="user-info">
-      <strong>User Name</strong>
+      <strong>{{ current_user.nome }}</strong>
       <small>{{ current_user.username }}</small>
     </div>
     <div class="dropdown-icon">▼</div>

@@ -1,8 +1,8 @@
-"""Cria tabelas com os tipos corretos
+"""Redefinir tabela de users
 
-Revision ID: 732b4df10bb8
+Revision ID: 6a326bccd625
 Revises: 
-Create Date: 2025-06-21 10:59:57.355928
+Create Date: 2025-06-21 16:25:26.414138
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '732b4df10bb8'
+revision = '6a326bccd625'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,12 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=False),
     sa.Column('password_hash', sa.String(length=256), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('nome', sa.String(length=120), nullable=False),
+    sa.Column('tipo', sa.String(length=50), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('foto_perfil', sa.String(length=255), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_users_username'), ['username'], unique=True)
@@ -52,7 +57,7 @@ def upgrade():
     sa.Column('aids', sa.Boolean(), nullable=False),
     sa.Column('drogas_vasoativas', sa.Boolean(), nullable=False),
     sa.Column('admissao_planejada', sa.Boolean(), nullable=False),
-    sa.Column('motivos_admissao', sa.String(length=255), nullable=False),
+    sa.Column('motivos_admissao', sa.String(length=512), nullable=False),
     sa.Column('cirurgia_realizada', sa.Boolean(), nullable=False),
     sa.Column('tipo_cirurgia', sa.String(length=255), nullable=True),
     sa.Column('sitio_atomico', sa.String(length=255), nullable=True),
@@ -68,6 +73,10 @@ def upgrade():
     sa.Column('ph', sa.String(length=50), nullable=False),
     sa.Column('plaquetas', sa.String(length=50), nullable=False),
     sa.Column('oxigenacao', sa.String(length=50), nullable=False),
+    sa.Column('responsavel', sa.String(length=120), nullable=True),
+    sa.Column('desfecho', sa.String(length=120), nullable=True),
+    sa.Column('data_desfecho', sa.Date(), nullable=True),
+    sa.Column('destino', sa.String(length=120), nullable=True),
     sa.ForeignKeyConstraint(['paciente_id'], ['paciente.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

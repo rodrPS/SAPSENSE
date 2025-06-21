@@ -11,6 +11,11 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
+    nome = db.Column(db.String(120), nullable=False)
+    tipo = db.Column(db.String(50), nullable=False)  # Ex: Médico, Enfermeiro, etc.
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    foto_perfil = db.Column(db.String(255), nullable=True)
+
 
     def set_password(self, password):
         """Cria um hash da senha e o armazena."""

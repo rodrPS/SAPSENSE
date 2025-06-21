@@ -4,10 +4,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect
 from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
+from forms.formRegister import RegisterForm
 from datetime import datetime
 from sqlalchemy import asc
 from models import User, Paciente, Internacao
 from extensions import db
+from werkzeug.utils import secure_filename
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -40,31 +43,43 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """Renderiza a página de registro e cria novos usuários."""
     if current_user.is_authenticated:
         return redirect(url_for('auth.home_page'))
 
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if User.query.filter_by(email=form.email.data).first():
+            flash('Email já está em uso.', 'warning')
+            return redirect(url_for('auth.register'))
 
-        # Verifica se o usuário já existe
-        if User.query.filter_by(username=username).first():
+        if User.query.filter_by(username=form.username.data).first():
             flash('Este nome de usuário já está em uso. Por favor, escolha outro.', 'warning')
             return redirect(url_for('auth.register'))
 
-        # Cria um novo usuário
-        new_user = User(username=username)
-        new_user.set_password(password) # Criptografa a senha
+        # Salvar imagem (se enviada)
+        foto_filename = None
+        if form.foto_perfil.data:
+            filename = secure_filename(form.foto_perfil.data.filename)
+            foto_path = os.path.join('static/uploads', filename)
+            form.foto_perfil.data.save(foto_path)
+            foto_filename = filename
 
-        # Adiciona ao banco de dados
-        db.session.add(new_user)
+        # Criar novo usuário
+        user = User(
+            username=form.username.data,
+            nome=form.nome.data,
+            tipo=form.tipo.data,
+            email=form.email.data,
+            foto_perfil=foto_filename
+        )
+        user.set_password(form.senha.data)
+        db.session.add(user)
         db.session.commit()
 
-        flash('Conta criada com sucesso! Por favor, faça o login.', 'success')
+        flash('Conta criada com sucesso! Faça login.', 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('register/index.html')
+    return render_template('register/index.html', form=form)
 
 
 @auth_bp.route('/home')
@@ -206,10 +221,46 @@ def atribuir_responsavel():
     db.session.commit()
     return jsonify({'success': True})
 
-@auth_bp.route('/admin')
+@auth_bp.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
-    return render_template('home/index.html')
+    page = request.args.get('page', 1, type=int)
+
+    users_paginated = User.query.paginate(page=page, per_page=10)
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        if User.query.filter_by(email=form.email.data).first():
+            return jsonify({'message': 'Email já está em uso.'}), 400
+
+        if User.query.filter_by(username=form.username.data).first():
+            return jsonify({'message': 'Nome de usuário já está em uso.'}), 400
+
+        # Salvar imagem (se enviada)
+        foto_filename = None
+        if form.foto_perfil.data:
+            filename = secure_filename(form.foto_perfil.data.filename)
+            foto_path = os.path.join('static/uploads', filename)
+            form.foto_perfil.data.save(foto_path)
+            foto_filename = filename
+
+        user = User(
+            username=form.username.data,
+            nome=form.nome.data,
+            tipo=form.tipo.data,
+            email=form.email.data,
+            foto_perfil=foto_filename
+        )
+        user.set_password(form.senha.data)
+        db.session.add(user)
+        db.session.commit()
+
+        return jsonify({'message': 'Usuário criado com sucesso!'}), 200
+
+    for field, errors in form.errors.items():
+        return jsonify({'message': f'{field}: {errors[0]}'}), 400
+
+    return render_template('admin/index.html', users_paginated=users_paginated, form=form)
 
 @auth_bp.route('/logout')
 @login_required

@@ -1,0 +1,11 @@
+.search-box {
+    padding: 8px 16px;
+}
+
+.search-box > input {
+    padding: 10px 16px;
+}
+
+.customized-modal{
+  max-width: 800px;
+}
