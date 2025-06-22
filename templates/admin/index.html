@@ -38,7 +38,6 @@
                     <th>Nome</th>
                     <th>Tipo de Usuário</th>
                     <th>Email</th>
-                    <th>Senha</th>
                     <th>Foto de Perfil</th>
                 </tr>
             </thead>
@@ -48,7 +47,6 @@
                     <td>{{ user.nome }}</td>
                     <td>{{ user.tipo }}</td>
                     <td>{{ user.email }}</td>
-                    <td {{ user.password_hash }} </td>
                     <td>
                         {% if user.foto_perfil %}
                             <button class="btn-primary atribuir">Alterar Foto</button>

@@ -1,0 +1,34 @@
+# Ambiente virtual
+venv/
+.env
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Arquivos de configuração locais
+*.env
+.env.*
+
+# Banco de dados e arquivos temporários
+*.sqlite3
+*.db
+*.log
+
+# Arquivos de IDEs
+.vscode/
+.idea/
+*.swp
+
+# Pasta de migrations (mantém o diretório, ignora conteúdo)
+migrations/*
+!migrations/README
+!migrations/__init__.py
+
+# Uploads e arquivos de usuário
+uploads/*
+static/uploads/*
+!uploads/.gitkeep
+!static/uploads/.gitkeep

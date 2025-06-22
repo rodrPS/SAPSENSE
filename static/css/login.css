@@ -43,10 +43,11 @@
     align-self: flex-start;
 }
 
-/* Link "Esqueceu a senha" */
 .forgot-password {
     text-align: right;
     margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
 .forgot-password a {

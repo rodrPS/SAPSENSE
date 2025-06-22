@@ -2,7 +2,7 @@
 
 from flask import Flask
 from config import Config
-from extensions import db, migrate, login_manager
+from extensions import db, migrate, login_manager, mail
 from routes import auth_bp
 import models # Apenas importe o módulo para que o SQLAlchemy reconheça os modelos
 
@@ -15,6 +15,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     # Define a view de login para o LoginManager
     login_manager.login_view = 'auth.login'

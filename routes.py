@@ -1,16 +1,18 @@
 # routes.py
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_mail import Message
 from flask_wtf.csrf import CSRFProtect
 from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
 from forms.formRegister import RegisterForm
 from datetime import datetime
 from sqlalchemy import asc
 from models import User, Paciente, Internacao
-from extensions import db
+from extensions import db, mail
 from werkzeug.utils import secure_filename
 import os
+from utils import str_to_bool, gerar_token, validar_token
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -40,46 +42,6 @@ def login():
             flash('Usuário ou senha inválidos.', 'danger')
 
     return render_template('login/index.html')
-
-@auth_bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('auth.home_page'))
-
-    form = RegisterForm()
-    if form.validate_on_submit():
-        if User.query.filter_by(email=form.email.data).first():
-            flash('Email já está em uso.', 'warning')
-            return redirect(url_for('auth.register'))
-
-        if User.query.filter_by(username=form.username.data).first():
-            flash('Este nome de usuário já está em uso. Por favor, escolha outro.', 'warning')
-            return redirect(url_for('auth.register'))
-
-        # Salvar imagem (se enviada)
-        foto_filename = None
-        if form.foto_perfil.data:
-            filename = secure_filename(form.foto_perfil.data.filename)
-            foto_path = os.path.join('static/uploads', filename)
-            form.foto_perfil.data.save(foto_path)
-            foto_filename = filename
-
-        # Criar novo usuário
-        user = User(
-            username=form.username.data,
-            nome=form.nome.data,
-            tipo=form.tipo.data,
-            email=form.email.data,
-            foto_perfil=foto_filename
-        )
-        user.set_password(form.senha.data)
-        db.session.add(user)
-        db.session.commit()
-
-        flash('Conta criada com sucesso! Faça login.', 'success')
-        return redirect(url_for('auth.login'))
-
-    return render_template('register/index.html', form=form)
 
 
 @auth_bp.route('/home')
@@ -123,9 +85,6 @@ def saps_form():
 
     # fallback
     return redirect(url_for('auth.saps_form', step=1))
-
-def str_to_bool(valor):
-    return valor.lower() == 'sim'
 
 @login_required
 @auth_bp.route('/saps-form/resumo', methods=['GET', 'POST'])
@@ -261,6 +220,61 @@ def admin():
         return jsonify({'message': f'{field}: {errors[0]}'}), 400
 
     return render_template('admin/index.html', users_paginated=users_paginated, form=form)
+
+@auth_bp.route('/recuperar-senha', methods=['GET', 'POST'])
+def recuperar_senha():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            token = gerar_token(email)
+            reset_url = url_for('auth.redefinir_senha', token=token, _external=True)
+
+            # Renderiza o template de e-mail HTML
+            html = render_template('recuperar_senha/mail.html', reset_url=reset_url, user=user)
+
+            msg = Message(subject='Redefinição de senha - SAPS sense',
+                          recipients=[email],
+                          html=html,
+                          sender=current_app.config['MAIL_USERNAME'])
+
+            mail.send(msg)
+            flash('Um e-mail com instruções foi enviado.', 'info')
+        else:
+            flash('E-mail não encontrado.', 'warning')
+
+        return redirect(url_for('auth.login'))
+
+    return render_template('recuperar_senha/index.html')
+
+@auth_bp.route('/redefinir-senha/<token>', methods=['GET', 'POST'])
+def redefinir_senha(token):
+    email = validar_token(token)
+    if not email:
+        flash('Token expirado ou inválido.', 'danger')
+        return redirect(url_for('auth.recuperar_senha'))
+
+    if request.method == 'POST':
+        senha = request.form.get('senha')
+        confirmar = request.form.get('confirmar')
+
+        if senha != confirmar:
+            flash('As senhas não coincidem.', 'warning')
+            return redirect(request.url)
+
+        if len(senha) < 6:
+            flash('A senha deve ter pelo menos 6 caracteres.', 'warning')
+            return redirect(request.url)
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.set_password(senha)
+            db.session.commit()
+            flash('Senha redefinida com sucesso!', 'success')
+            return redirect(url_for('auth.login'))
+
+    return render_template('recuperar_nova_senha/index.html', token=token)
 
 @auth_bp.route('/logout')
 @login_required

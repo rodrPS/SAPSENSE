@@ -11,18 +11,6 @@
   margin-bottom: 24px;
 }
 
-.search-box {
-  margin: 20px 0;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 10px 16px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
 /* --- Ícone de edição (✏️) --- */
 button.editar-responsavel {
   background: none;
