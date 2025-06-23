@@ -56,9 +56,13 @@ def home_page():
     # Use um limite razoável para a home, a paginação completa fica em /pacientes
     internacoes_recentes = Internacao.query.filter_by(data_desfecho=None).order_by(Internacao.data_admissao.desc()).limit(5).all()
 
+    #Pacientes
+    page = request.args.get('page', 1, type=int)
+    internacoes_paginated = Internacao.query.filter_by(data_desfecho=None).paginate(page=page, per_page=10)
+
     return render_template('home/index.html',
                            ocupados=leitos_ocupados,
-                           internacoes=internacoes_recentes)
+                           internacoes=internacoes_recentes, internacoes_paginated=internacoes_paginated)
 
 @auth_bp.route('/saps-form', methods=['GET', 'POST'])
 @login_required

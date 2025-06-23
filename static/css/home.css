@@ -1,146 +1,100 @@
-/* Layout Principal em Grid */
-.home-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-areas:
-        "header header header"
-        "saps leitos profissionais"
-        "pacientes fluxo fluxo"
-        "pacientes resumo resumo";
-    gap: 24px;
-    padding: 2rem;
-    background-color: var(--cinza-100);
+.card-stats-group {
+  background-color: white;
+  padding: 20px 24px;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-/* Card Genérico para a Home */
-.card-main {
+.card-stats-group h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--preto-500);
+}
+
+.home-col{
+    width: 60%;
+}
+
+.card-stats-group > .row{
+    display: flex;
+    gap: 24px;
+}
+
+.card-stats-group > .row > .card{
+    padding: 20px 0;
+    box-shadow: none;
+}
+
+.resumo-leitos > .row > .card{
+    flex-direction: column;
+    align-items: baseline;
+    padding: 4px 0;
+}
+
+.card-stats-group > .row > .card h1 {
+  font-size: 28px;
+  color: var(--azul-600);
+  padding: 8px 16px;
+  border-radius: 16px;
+  background-color: var(--azul-50);
+  min-width: 80px;
+}
+
+.card-stats-group > .row > .card p {
+  font-size: 1rem;
+  color: var(--preto-400);
+  margin-top: 4px;
+}
+
+.btn-preencher-saps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--azul-500);
+    color: var(--white);
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    gap: 16px;
+    border: none;
+    transition: background-color 0.2s;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    min-height: 110px;
+}
+
+.btn-preencher-saps:hover {
+    background-color: var(--azul-600);
+}
+
+.btn-preencher-saps img {
+    width: 48px;
+    height: 48px;
+}
+
+/* Gráficos */
+
+
+.card-graph{
     background-color: var(--white);
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    width: 100%;
 }
-.card-main h2 {
+
+.card-graph h2 {
     font-size: 1rem;
     font-weight: 600;
     color: var(--preto-500);
     margin-bottom: 24px;
 }
 
-/* Áreas do Grid */
-.resumo-geral { grid-area: header; }
-.card-preencher-saps { grid-area: saps; }
-.card-leitos { grid-area: leitos; }
-.card-profissionais { grid-area: profissionais; }
-.card-pacientes { grid-area: pacientes; }
-.card-fluxo { grid-area: fluxo; }
-.card-resumo-pacientes { grid-area: resumo; }
-
-/* Estilos Específicos dos Cards */
-.resumo-geral h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.card-preencher-saps {
-    display: flex;
-}
-.btn-preencher-saps {
-    background-color: var(--azul-500);
-    color: var(--white);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 600;
-    gap: 16px;
-    text-decoration: none;
-    transition: background-color 0.2s;
-    width: 100%;
-    height: 100%;
-}
-.btn-preencher-saps:hover {
-    background-color: var(--azul-600);
-}
-.btn-preencher-saps .icon-wrapper {
-    background-color: rgba(255,255,255, 0.2);
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stats-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 100%;
-    text-align: center;
-}
-.stats-container .numero {
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--preto-500);
-    display: block;
-}
-.stats-container .label {
-    font-size: 0.9rem;
-    color: var(--preto-300);
-}
-.stats-container-profissionais {
-    display: flex;
-    gap: 32px;
-    font-size: 0.9rem;
-    color: var(--preto-400);
-}
-.stats-container-profissionais .col {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-/* Tabela de Pacientes */
-.table-wrapper-home { overflow-x: auto; }
-.table-wrapper-home table { width: 100%; border-collapse: collapse; }
-.table-wrapper-home th, .table-wrapper-home td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid var(--cinza-200);
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-.table-wrapper-home th { font-weight: 500; color: var(--preto-300); }
-.resultado-ruim { color: var(--vermelho-500); font-weight: 600; }
-.btn-atribuir {
-    background-color: var(--azul-500);
-    color: white;
-    border: none;
-    padding: 6px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.pagination-home {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-    margin-top: 24px;
-    font-size: 0.9rem;
-}
-.pagination-home a, .pagination-home span {
-    text-decoration: none;
-    color: var(--preto-400);
-    padding: 6px 12px;
-    border-radius: 8px;
-}
-.pagination-home a.active { background-color: var(--azul-100); color: var(--azul-900); }
-
-/* Gráficos */
 .card-fluxo .card-header {
     display: flex;
     justify-content: space-between;

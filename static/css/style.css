@@ -276,6 +276,17 @@ form {
     gap: 24px;
 }
 
+.container-row{
+    display: flex;
+    gap: 16px;
+}
+
+.container-col{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 .stats-cards {
   display: flex;
   gap: 16px;
@@ -292,6 +303,11 @@ form {
   display: flex;
   gap: 16px;
   align-items: center;
+}
+
+.stats-cards > .row{
+    display: flex;
+    gap: 24px;
 }
 
 .card h1 {
