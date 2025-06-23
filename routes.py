@@ -13,8 +13,8 @@ from models import User, Paciente, Internacao
 from extensions import db, mail
 from werkzeug.utils import secure_filename
 import os
-from utils import str_to_bool, gerar_token, validar_token
-
+from utils import str_to_bool, gerar_token, validar_token, calcular_saps3
+from datetime import datetime
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/')
@@ -49,7 +49,16 @@ def login():
 @login_required
 def home_page():
     """Renderiza a home page, acessível apenas para usuários logados."""
-    return render_template('home/index.html')
+    # Conta o número de leitos ocupados (internações sem data de desfecho)
+    leitos_ocupados = Internacao.query.filter_by(data_desfecho=None).count()
+
+    # Busca as 5 internações mais recentes para exibir na tabela
+    # Use um limite razoável para a home, a paginação completa fica em /pacientes
+    internacoes_recentes = Internacao.query.filter_by(data_desfecho=None).order_by(Internacao.data_admissao.desc()).limit(5).all()
+
+    return render_template('home/index.html',
+                           ocupados=leitos_ocupados,
+                           internacoes=internacoes_recentes)
 
 @auth_bp.route('/saps-form', methods=['GET', 'POST'])
 @login_required
@@ -132,6 +141,8 @@ def resumo():
     dados.update(session.get('step3', {}))
     dados.update(session.get('step4', {}))
 
+    saps_score, mortalidade_estimada = calcular_saps3(dados)
+
     # Verifica se o paciente já existe
     paciente = Paciente.query.filter_by(cpf=dados['cpf']).first()
     if not paciente:
@@ -182,13 +193,20 @@ def resumo():
         leucocitos=dados['leucocitos'],
         ph=dados['ph'],
         plaquetas=dados['plaquetas'],
-        oxigenacao=dados['oxigenacao']
+        oxigenacao=dados['oxigenacao'],
+        saps_score=saps_score,
+        mortalidade_estimada=mortalidade_estimada
     )
 
     db.session.add(internacao)
     db.session.commit()
 
-    return render_template('sapsForm/resultado.html', dados=dados)
+    session.pop('step1', None)
+    session.pop('step2', None)
+    session.pop('step3', None)
+    session.pop('step4', None)
+
+    return render_template('sapsForm/resultado.html', saps_score=saps_score, mortalidade=mortalidade_estimada)
 
 @auth_bp.route('/pacientes')
 @login_required

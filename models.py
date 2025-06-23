@@ -85,6 +85,9 @@ class Internacao(db.Model):
     data_desfecho = db.Column(db.Date, nullable=True)
     destino = db.Column(db.String(120), nullable=True)
 
+    saps_score = db.Column(db.Integer, nullable=True)
+    mortalidade_estimada = db.Column(db.Float, nullable=True)
+
     def __repr__(self):
         return f"<Internacao {self.id} - Paciente {self.paciente_id}>"
 
