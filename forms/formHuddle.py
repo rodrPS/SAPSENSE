@@ -25,9 +25,9 @@ class Step1Huddle(FlaskForm):
                        default='Diurno',
                        validators=[InputRequired()])
     equipe_compareceu = RadioField("Equipe Compareceu",
-                                   choices=[('Sim', 'Sim'),
-                                            ('Não', 'Não')],
-                                   default='Sim',
+                                   choices=[('sim', 'Sim'),
+                                            ('nao', 'Não')],
+                                   default='sim',
                                    validators=[InputRequired()])
 
     equipe_huddle = SelectMultipleField(
@@ -45,7 +45,7 @@ class Step2Huddle(FlaskForm):
 
     ha_leitos_bloqueados = RadioField(
         "Há leitos bloqueados?",
-        choices=[('Sim', 'Sim'), ('Não', 'Não')],
+        choices=[('sim', 'Sim'), ('nao', 'Não')],
         default='Sim',
         validators=[Optional()]
     )
@@ -57,8 +57,8 @@ class Step2Huddle(FlaskForm):
 
     houve_solicitacao_vaga = RadioField(
         "Solicitação de vaga/regulação?",
-        choices=[('Sim', 'Sim'), ('Não', 'Não')],
-        default='Sim',
+        choices=[('sim', 'Sim'), ('nao', 'Não')],
+        default='sim',
         validators=[Optional()]
     )
     qtd_solicitacoes = IntegerField("Quantidade de solicitações", validators=[Optional()])
@@ -66,8 +66,8 @@ class Step2Huddle(FlaskForm):
 
     exames_programados = RadioField(
         "Exames programados?",
-        choices=[('Sim', 'Sim'), ('Não', 'Não')],
-        default='Sim',
+        choices=[('sim', 'Sim'), ('nao', 'Não')],
+        default='sim',
         validators=[Optional()]
     )
     qtd_exames = IntegerField("Quantidade de exames", validators=[Optional()])
@@ -80,13 +80,13 @@ class Step3Huddle(FlaskForm):
     usando_svd = IntegerField("Usando SVD", validators=[Optional()])
     usando_cvc = IntegerField("Usando CVC", validators=[Optional()])
 
-    retirada_svd = RadioField("Indicação de retirada de SVD?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    retirada_svd = RadioField("Indicação de retirada de SVD?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
     pacientes_retirada_svd = StringField("Pacientes", validators=[Optional()])
 
-    retirada_cvc = RadioField("Indicação de retirada de CVC?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    retirada_cvc = RadioField("Indicação de retirada de CVC?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
     pacientes_retirada_cvc = StringField("Pacientes", validators=[Optional()])
 
-    despertar_diario = RadioField("Indicação de despertar diário?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    despertar_diario = RadioField("Indicação de despertar diário?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
     pacientes_despertar_diario = StringField("Pacientes", validators=[Optional()])
 
     ventilacao_mecanica = IntegerField("Ventilação mecânica", validators=[Optional()])
@@ -94,12 +94,12 @@ class Step3Huddle(FlaskForm):
     progressao_funcional = IntegerField("Cond. de progressão funcional", validators=[Optional()])
 
 class Step4Huddle(FlaskForm):
-    evento_adverso = RadioField("Evento adverso nas últimas 24h?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    evento_adverso = RadioField("Evento adverso nas últimas 24h?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
 
-    problema_unidade = RadioField("Problemas da unidade?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    problema_unidade = RadioField("Problemas da unidade?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
     descricao_unidade = StringField("Quais?", validators=[Optional()])
 
-    problema_hospital = RadioField("Problemas no hospital?", choices=[('Sim', 'Sim'), ('Não', 'Não')], validators=[Optional()])
+    problema_hospital = RadioField("Problemas no hospital?", choices=[('sim', 'Sim'), ('nao', 'Não')], validators=[Optional()])
     descricao_hospital = StringField("Quais?", validators=[Optional()])
 
     outro_problema = StringField("Outro problema", validators=[Optional()])

@@ -35,7 +35,7 @@
             </div>
             <div class="form-group-radio">
                 <p>{{ form.equipe_compareceu.label.text }}</p>
-                <div class="form-group-radio-items">
+                <div class="form-group-radio-items" id="equipe-compareceu-radio">
                     {% for subfield in form.equipe_compareceu %}
                         <label class="custom-radio">
                             {{ subfield() }} {{ subfield.label.text }}
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class="form-card col">
+        <div class="form-card col resumo-detalhado">
             <label>{{ form.equipe_huddle.label }}</label>
             <div class="checkbox-grid-2col">
                 {% for subfield in form.equipe_huddle %}
@@ -62,7 +62,7 @@
             {% endfor %}
         </div>
 
-        <div class="form-card">
+        <div class="form-card resumo-detalhado">
             <div class="form-group">
                 {{ form.tecnicos_enfermagem.label }}
                 {{ form.tecnicos_enfermagem(class_="form-control") }}
@@ -73,8 +73,9 @@
         </div>
 
         <div class="form-footer">
-            <button type="submit" class="btn-primary">Próximo</button>
+            <button type="submit" class="btn-primary" id="submit-huddle">Próximo</button>
         </div>
     </form>
 </div>
+<script src="{{ url_for('static', filename='js/huddleForm1.js') }}"></script>
 {% endblock %}

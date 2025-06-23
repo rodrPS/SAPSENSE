@@ -452,3 +452,18 @@ form {
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 1092px) {
+  .container-row{
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .card p{
+    font-size: 0.9rem;
+  }
+  .card h1 {
+    font-size: 24px;
+  }
+}
