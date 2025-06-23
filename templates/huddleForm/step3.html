@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Formulário do Huddle{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <header class="form-header">
+        <h1>Formulário do Huddle</h1>
+        <div class="form-progress">
+            <div class="form-progress-bar" style="width: 75%;"></div>
+        </div>
+        <p class="form-step-title">Informações sobre os pacientes</p>
+    </header>
+
+    <form method="POST" class="form-step">
+        {{ form.hidden_tag() }}
+
+        <div class="form-card">
+            <div class="form-group">{{ form.mais_graves.label }} {{ form.mais_graves }}</div>
+            <div class="form-group">{{ form.em_isolamento.label }} {{ form.em_isolamento }}</div>
+            <div class="form-group">{{ form.em_dialise.label }} {{ form.em_dialise }}</div>
+            <div class="form-group">{{ form.usando_svd.label }} {{ form.usando_svd }}</div>
+            <div class="form-group">{{ form.usando_cvc.label }} {{ form.usando_cvc }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group-radio">
+                <p>{{ form.retirada_svd.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.retirada_svd %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.pacientes_retirada_svd.label }} {{ form.pacientes_retirada_svd }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group-radio">
+                <p>{{ form.retirada_cvc.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.retirada_cvc %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.pacientes_retirada_cvc.label }} {{ form.pacientes_retirada_cvc }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group-radio">
+                <p>{{ form.despertar_diario.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.despertar_diario %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.pacientes_despertar_diario.label }} {{ form.pacientes_despertar_diario }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group">{{ form.ventilacao_mecanica.label }} {{ form.ventilacao_mecanica }}</div>
+            <div class="form-group">{{ form.ims_maior_igual_4.label }} {{ form.ims_maior_igual_4 }}</div>
+            <div class="form-group">{{ form.progressao_funcional.label }} {{ form.progressao_funcional }}</div>
+        </div>
+
+
+        <div class="form-footer">
+            <button type="submit" class="btn-primary">Próximo</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

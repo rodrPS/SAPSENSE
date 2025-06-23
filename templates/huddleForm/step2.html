@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Formulário do Huddle{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <header class="form-header">
+        <h1>Formulário do Huddle</h1>
+        <div class="form-progress">
+            <div class="form-progress-bar" style="width: 50%;"></div>
+        </div>
+        <p class="form-step-title">Informações sobre a unidade</p>
+    </header>
+
+    <form method="POST" class="form-step">
+        {{ form.hidden_tag() }}
+
+        <div class="form-card">
+            <div class="form-group">{{ form.leitos_ocupados.label }} {{ form.leitos_ocupados }}</div>
+            <div class="form-group-radio">
+                <p>{{ form.ha_leitos_bloqueados.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.ha_leitos_bloqueados %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.qtd_leitos_bloqueados.label }} {{ form.qtd_leitos_bloqueados }}</div>
+            <div class="form-group">{{ form.motivo_bloqueio.label }} {{ form.motivo_bloqueio }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group">{{ form.altas_confirmadas.label }} {{ form.altas_confirmadas }}</div>
+            <div class="form-group">{{ form.altas_aval.label }} {{ form.altas_aval }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group-radio">
+                <p>{{ form.houve_solicitacao_vaga.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.houve_solicitacao_vaga %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.qtd_solicitacoes.label }} {{ form.qtd_solicitacoes }}</div>
+            <div class="form-group">{{ form.origem_solicitacoes.label }} {{ form.origem_solicitacoes }}</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group-radio">
+                <p>{{ form.exames_programados.label.text }}</p>
+                <div class="form-group-radio-items">
+                    {% for subfield in form.exames_programados %}
+                        <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">{{ form.qtd_exames.label }} {{ form.qtd_exames }}</div>
+            <div class="form-group">{{ form.quais_exames.label }} {{ form.quais_exames }}</div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn-primary">Próximo</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

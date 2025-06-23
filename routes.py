@@ -5,6 +5,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from flask_wtf.csrf import CSRFProtect
 from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
+from forms.formHuddle import Step1Huddle, Step2Huddle, Step3Huddle, Step4Huddle
 from forms.formRegister import RegisterForm
 from datetime import datetime
 from sqlalchemy import asc
@@ -85,6 +86,42 @@ def saps_form():
 
     # fallback
     return redirect(url_for('auth.saps_form', step=1))
+
+@auth_bp.route('/huddle-form', methods=['GET', 'POST'])
+@login_required
+def huddle_form():
+    step = int(request.args.get('step', 1))
+
+    if step == 1:
+        form = Step1Huddle()
+        if form.validate_on_submit():
+            session['step1'] = form.data
+            return redirect(url_for('auth.huddle_form', step=2))
+        return render_template('huddleForm/step1.html', form=form)
+
+    elif step == 2:
+        form = Step2Huddle()
+        if form.validate_on_submit():
+            session['step2'] = form.data
+            return redirect(url_for('auth.huddle_form', step=3))
+        return render_template('huddleForm/step2.html', form=form)
+
+    elif step == 3:
+        form = Step3Huddle()
+        if form.validate_on_submit():
+            session['step3'] = form.data
+            return redirect(url_for('auth.huddle_form', step=4))
+        return render_template('huddleForm/step3.html', form=form)
+
+    elif step == 4:
+        form = Step4Huddle()
+        if form.validate_on_submit():
+            session['step4'] = form.data
+            return redirect(url_for('auth.resumo'))
+        return render_template('huddleForm/step4.html', form=form)
+
+    # fallback
+    return redirect(url_for('auth.huddle_form', step=1))
 
 @login_required
 @auth_bp.route('/saps-form/resumo', methods=['GET', 'POST'])

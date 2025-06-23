@@ -223,12 +223,6 @@ form {
   cursor: pointer;
 }
 
-.checkbox-grid-2col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem 1rem;
-}
-
 .text-danger{
     color: var(--vermelho-500);
 }
