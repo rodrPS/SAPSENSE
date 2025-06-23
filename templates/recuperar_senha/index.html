@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Recuperar Senha - SAPS sense{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-background"></div>
+    <div class="login-form-area">
+        <div class="form-wrapper">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="SAPS sense Logo" class="logo-login">
+            <form method="post" action="{{ url_for('auth.recuperar_senha') }}">
+                <div class="form-group">
+                    <label for="email">Insira o email cadastrado para recuperar a senha</label>
+                    <input type="email" id="email" name="email" placeholder="email@exemplo.com" required>
+                </div>
+                <button type="submit" class="btn-login">Enviar Instruções</button>
+            </form>
+            <div class="forgot-password" style="text-align:center; margin-top:20px;">
+                <a href="{{ url_for('auth.login') }}">Voltar para o login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Formulário do SAPS - Etapa 4{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sapsForm.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <header class="form-header">
+        <h1>Formulário do SAPS</h1>
+        <div class="form-progress">
+            <div class="form-progress-bar" style="width: 100%;"></div>
+        </div>
+        <p class="form-step-title">Quadro III – Dados Categorizados SAPS</p>
+    </header>
+
+    <form method="POST" class="form-step">
+        {{ form.hidden_tag() }}
+
+        <!-- Campo: Glasgow -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.glasgow.label.text }}</p>
+                {% for subfield in form.glasgow %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.glasgow.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Temperatura -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.temperatura.label.text }}</p>
+                {% for subfield in form.temperatura %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.temperatura.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Frequência Cardíaca -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.frequencia_cardiaca.label.text }}</p>
+                {% for subfield in form.frequencia_cardiaca %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.frequencia_cardiaca.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: PA Sistólica -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.pressao_sistolica.label.text }}</p>
+                {% for subfield in form.pressao_sistolica %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.pressao_sistolica.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Bilirrubina -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.bilirrubina.label.text }}</p>
+                {% for subfield in form.bilirrubina %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.bilirrubina.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Creatinina -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.creatinina.label.text }}</p>
+                {% for subfield in form.creatinina %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.creatinina.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Leucócitos -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.leucocitos.label.text }}</p>
+                {% for subfield in form.leucocitos %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.leucocitos.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: pH -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.ph.label.text }}</p>
+                {% for subfield in form.ph %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.ph.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Plaquetas -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.plaquetas.label.text }}</p>
+                {% for subfield in form.plaquetas %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.plaquetas.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Campo: Oxigenação -->
+        <div class="form-card col">
+            <div class="form-group-radio">
+                <p>{{ form.oxigenacao.label.text }}</p>
+                {% for subfield in form.oxigenacao %}
+                    <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+                {% endfor %}
+                {% for error in form.oxigenacao.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn-primary">Finalizar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

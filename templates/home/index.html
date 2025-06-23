@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Home - SAPS sense{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="home-grid">
+    <header class="resumo-geral">
+        <h1>Resumo Geral</h1>
+    </header>
+
+    <section class="card-preencher-saps card-main">
+        <a href="{{ url_for('auth.saps_form') }}" class="btn-preencher-saps">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </div>
+            <span>Preencher SAPS</span>
+        </a>
+    </section>
+
+    <section class="card-leitos card-main">
+        <h2>Resumo de Leitos</h2>
+        <div class="stats-container">
+            <div>
+                <span class="numero">20</span>
+                <span class="label">Total</span>
+            </div>
+            <div>
+                <span class="numero">{{ ocupados }}</span>
+                <span class="label">Ocupados</span>
+            </div>
+            <div>
+                <span class="numero">{{ 20 - ocupados }}</span>
+                <span class="label">Disponíveis</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card-profissionais card-main">
+        <h2>Resumo de Profissionais</h2>
+        <div class="stats-container-profissionais">
+            <div class="col">
+                <span><strong>2</strong> Médicos</span>
+                <span><strong>10</strong> Técnicos de Enfermagem</span>
+                <span><strong>2</strong> Nutricionista</span>
+            </div>
+            <div class="col">
+                <span><strong>2</strong> Enfermeiros</span>
+                <span><strong>10</strong> Fisioterapeutas</span>
+                <span><strong>2</strong> Fonoaudiólogo</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card-pacientes card-main">
+        <h2>Pacientes Internados</h2>
+        <div class="table-wrapper-home">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Leito</th>
+                        <th>Nome</th>
+                        <th>Responsável</th>
+                        <th>Internado(a) em</th>
+                        <th>Resultado SAPS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in internacoes %}
+                    <tr>
+                        <td>{{ i.leito }}</td>
+                        <td>{{ i.paciente.nome }}</td>
+                        <td><button class="btn-atribuir">Atribuir</button></td>
+                        <td>{{ i.data_admissao.strftime('%d/%m/%Y') }}</td>
+                        <td class="resultado-ruim">80 (20%)</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-home">
+            <a href="#">&lt; Anterior</a>
+            <a href="#">1</a>
+            <a href="#" class="active">2</a>
+            <a href="#">3</a>
+            <span>...</span>
+            <a href="#">11</a>
+            <a href="#">Próximo &gt;</a>
+        </div>
+    </section>
+
+    <section class="card-fluxo card-main">
+        <div class="card-header">
+            <h2>Fluxo de Pacientes</h2>
+            <input type="text" value="02/06/2025 - 08/06/2025" class="date-picker">
+        </div>
+        <div class="legend">
+           <span class="entrada"></span> Entrada
+           <span class="saida"></span> Saída
+        </div>
+        <div class="chart-bar-container">
+            {% for dia in ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'] %}
+            <div class="bar-group">
+                <div class="bar entrada-bar" style="height: {{ (10 - loop.index) * 10 + 20 }}%;"></div>
+                <div class="bar saida-bar" style="height: {{ (loop.index) * 8 + 15 }}%;"></div>
+                <span>{{ dia[:3] }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="card-resumo-pacientes card-main">
+        <h2>Resumo dos Pacientes</h2>
+        <div class="resumo-list">
+            <div class="resumo-item">
+                <span>Mais Grave</span>
+                <div class="progress-container"><div class="progress" style="width: 80%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>Em tratamento</span>
+                <div class="progress-container"><div class="progress" style="width: 75%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>Em diálise</span>
+                <div class="progress-container"><div class="progress" style="width: 60%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>Com sonda vesical</span>
+                <div class="progress-container"><div class="progress" style="width: 55%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>Cateter venoso central</span>
+                <div class="progress-container"><div class="progress" style="width: 50%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>Ventilação Mecânica</span>
+                <div class="progress-container"><div class="progress" style="width: 40%;"></div></div>
+                <span>10</span>
+            </div>
+            <div class="resumo-item">
+                <span>IM5 + OU = 4.4</span>
+                <div class="progress-container"><div class="progress" style="width: 30%;"></div></div>
+                <span>10</span>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

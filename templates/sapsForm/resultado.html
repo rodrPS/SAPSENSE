@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultado SAPS 3 - SAPS sense{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sapsForm.css') }}">
+<style>
+    .resultado-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin: 40px auto;
+        max-width: 600px;
+    }
+    .resultado-container h2 {
+        font-size: 24px;
+        color: var(--preto-500);
+        margin-bottom: 24px;
+    }
+    .resultado-item {
+        margin-bottom: 16px;
+    }
+    .resultado-label {
+        font-size: 16px;
+        color: var(--preto-300);
+    }
+    .resultado-valor {
+        font-size: 36px;
+        font-weight: 600;
+        color: var(--azul-600);
+    }
+    .resultado-valor-mortalidade {
+        color: var(--vermelho-500);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="saps-form-container">
+    <div class="resultado-container">
+        <h2>Resultado do SAPS 3</h2>
+
+        <div class="resultado-item">
+            <p class="resultado-label">Pontuação SAPS 3</p>
+            <p class="resultado-valor">{{ saps_score }}</p>
+        </div>
+
+        <div class="resultado-item">
+            <p class="resultado-label">Estimativa de Mortalidade</p>
+            <p class="resultado-valor resultado-valor-mortalidade">{{ "%.2f"|format(mortalidade) }}%</p>
+        </div>
+
+        <a href="{{ url_for('auth.home_page') }}" class="btn-primary" style="margin-top: 20px;">Voltar para a Home</a>
+    </div>
+</div>
+{% endblock %}
