@@ -8,16 +8,18 @@ from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
 from forms.formHuddle import Step1Huddle, Step2Huddle, Step3Huddle, Step4Huddle
 from forms.formRegister import RegisterForm
 from datetime import datetime
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 from models import User, Paciente, Internacao, Huddle
 from extensions import db, mail
 from werkzeug.utils import secure_filename
 import os
-from utils import str_to_bool, gerar_token, validar_token, calcular_saps3, gerar_resumo_ia
+from utils import gerar_token, validar_token, calcular_saps3, gerar_resumo_ia
 from datetime import datetime
+from datetime import datetime, timedelta
+from pytz import timezone
 
 from validators.formHuddle import processar_huddle_basico, processar_huddle_completo
-
+from validators.formSaps import FormularioIncompletoException, obter_dados_formulario, salvar_dados_saps
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -52,21 +54,72 @@ def login():
 @auth_bp.route('/home')
 @login_required
 def home_page():
-    """Renderiza a home page, acessível apenas para usuários logados."""
-    # Conta o número de leitos ocupados (internações sem data de desfecho)
-    leitos_ocupados = Internacao.query.filter_by(data_desfecho=None).count()
+    ultimo_huddle = Huddle.query.order_by(desc(Huddle.criado_em)).first()
 
-    # Busca as 5 internações mais recentes para exibir na tabela
-    # Use um limite razoável para a home, a paginação completa fica em /pacientes
-    internacoes_recentes = Internacao.query.filter_by(data_desfecho=None).order_by(Internacao.data_admissao.desc()).limit(5).all()
+    br_tz = timezone('America/Sao_Paulo')
+    if ultimo_huddle:
+        data_ultimo_huddle = ultimo_huddle.criado_em.astimezone(br_tz).strftime("%d/%m/%Y")
+        dados_huddle = {
+            "mais_grave": ultimo_huddle.mais_graves or 0,
+            "em_tratamento": ultimo_huddle.progressao_funcional or 0,
+            "dialise": ultimo_huddle.em_dialise or 0,
+            "sonda_vesical": ultimo_huddle.usando_svd or 0,
+            "cateter_venoso": ultimo_huddle.usando_cvc or 0,
+            "ventilacao_mecanica": ultimo_huddle.ventilacao_mecanica or 0,
+            "im5_acima_4_4": ultimo_huddle.ims_maior_igual_4 or 0
+        }
+        dados_huddle["total"] = sum(dados_huddle.values())
+    else:
+        data_ultimo_huddle = "Nenhum Huddle registrado"
+        dados_huddle = {key: 0 for key in [
+            "mais_grave", "em_tratamento", "dialise", "sonda_vesical",
+            "cateter_venoso", "ventilacao_mecanica", "im5_acima_4_4", "total"
+        ]}
+
+    leitos_ocupados = Internacao.query.filter_by(data_desfecho=None).count()
+    hoje = datetime.today().date()
+    inicio_periodo = hoje - timedelta(days=6)  # últimos 7 dias (incluindo hoje)
+
+    entradas_por_dia = []
+    saidas_por_dia = []
+    dias_semana = []
+    dias_datas = []
+
+    for i in range(7):
+        dia = inicio_periodo + timedelta(days=i)
+
+        entradas = Internacao.query.filter(
+            Internacao.data_admissao == dia
+        ).count()
+
+        saidas = Internacao.query.filter(
+            Internacao.data_desfecho != None,
+            Internacao.data_desfecho == dia
+        ).count()
+
+        entradas_por_dia.append(entradas)
+        saidas_por_dia.append(saidas)
+
+        dias_semana.append(dia.strftime('%a'))  # 'Seg', 'Ter', ...
+        dias_datas.append(dia.day)              # número do dia do mês
+
+    periodo = f"{inicio_periodo.strftime('%d/%m/%Y')} - {hoje.strftime('%d/%m/%Y')}"
+
 
     #Pacientes
     page = request.args.get('page', 1, type=int)
     internacoes_paginated = Internacao.query.filter_by(data_desfecho=None).paginate(page=page, per_page=10)
 
     return render_template('home/index.html',
-                           ocupados=leitos_ocupados,
-                           internacoes=internacoes_recentes, internacoes_paginated=internacoes_paginated)
+                            ocupados=leitos_ocupados,
+                            internacoes_paginated=internacoes_paginated,
+                            entradas_por_dia=entradas_por_dia,
+                            saidas_por_dia=saidas_por_dia,
+                            dias_semana=dias_semana,
+                            dias_datas=dias_datas,
+                            periodo=periodo,
+                            dados_huddle=dados_huddle,
+                            data_ultimo_huddle=data_ultimo_huddle)
 
 @auth_bp.route('/saps-form', methods=['GET', 'POST'])
 @login_required
@@ -160,83 +213,34 @@ def huddle_form():
     # fallback
     return redirect(url_for('auth.huddle_form', step=1))
 
-@login_required
 @auth_bp.route('/saps-form/resumo', methods=['GET', 'POST'])
+@login_required
 def resumo():
-    dados = {}
-    dados.update(session.get('step1', {}))
-    dados.update(session.get('step2', {}))
-    dados.update(session.get('step3', {}))
-    dados.update(session.get('step4', {}))
+    try:
+        dados = obter_dados_formulario()
+    except FormularioIncompletoException as e:
+        flash(str(e), "danger")
+        return redirect(url_for('auth.saps_form'))
 
     saps_score, mortalidade_estimada = calcular_saps3(dados)
 
+    try:
+        salvar_dados_saps(dados, saps_score, mortalidade_estimada)
+    except RuntimeError as e:
+        flash(str(e), "danger")
+        return redirect(url_for('auth.saps_form'))
+
     resumo_ia = gerar_resumo_ia(dados, saps_score, mortalidade_estimada)
 
-    # Verifica se o paciente já existe
-    paciente = Paciente.query.filter_by(cpf=dados['cpf']).first()
-    if not paciente:
-        paciente = Paciente(
-            cpf=dados['cpf'].replace('.', '').replace('-', ''),
-            nome=dados['nome'],
-            data_nascimento=datetime.strptime(dados['data_nascimento'], "%a, %d %b %Y %H:%M:%S GMT").date()
-        )
-        db.session.add(paciente)
-        db.session.commit()
+    for key in ['step1', 'step2', 'step3', 'step4']:
+        session.pop(key, None)
 
-    # Converte lista de múltiplos motivos em string
-    motivos_admissao_str = ",".join(dados.get('motivos_admissao', []))
-
-    # Cria objeto Internacao com conversão de campos booleanos
-    internacao = Internacao(
-        paciente_id=paciente.id,
-        leito=dados['leito'],
-        procedencia=dados['procedencia'],
-        data_admissao=datetime.strptime(dados['data_admissao'], "%a, %d %b %Y %H:%M:%S GMT").date(),
-        reinternacao=str_to_bool(dados['reinternacao']),
-        duracao_internacao=dados.get('duracao_internacao'),
-        local_previo=dados.get('local_previo'),
-
-        terapia_cancer=str_to_bool(dados['terapia_cancer']),
-        cancer_metastatico=str_to_bool(dados['cancer_metastatico']),
-        insuficiencia_cardiaca=str_to_bool(dados['insuficiencia_cardiaca']),
-        cirrose=str_to_bool(dados['cirrose']),
-        aids=str_to_bool(dados['aids']),
-        drogas_vasoativas=str_to_bool(dados['drogas_vasoativas']),
-
-        admissao_planejada=str_to_bool(dados['admissao_planejada']),
-        motivos_admissao=motivos_admissao_str,
-
-        cirurgia_realizada=str_to_bool(dados['cirurgia_realizada']),
-        tipo_cirurgia=dados.get('tipo_cirurgia'),
-        sitio_atomico=dados.get('sitio_atomico'),
-
-        infeccao_aguda=str_to_bool(dados['infeccao_aguda']),
-        tipo_infeccao=dados.get('tipo_infeccao'),
-
-        glasgow=dados['glasgow'],
-        temperatura=dados['temperatura'],
-        frequencia_cardiaca=dados['frequencia_cardiaca'],
-        pressao_sistolica=dados['pressao_sistolica'],
-        bilirrubina=dados['bilirrubina'],
-        creatinina=dados['creatinina'],
-        leucocitos=dados['leucocitos'],
-        ph=dados['ph'],
-        plaquetas=dados['plaquetas'],
-        oxigenacao=dados['oxigenacao'],
+    return render_template(
+        'sapsForm/resultado.html',
         saps_score=saps_score,
-        mortalidade_estimada=mortalidade_estimada
+        mortalidade=mortalidade_estimada,
+        resumo_ia=resumo_ia
     )
-
-    db.session.add(internacao)
-    db.session.commit()
-
-    session.pop('step1', None)
-    session.pop('step2', None)
-    session.pop('step3', None)
-    session.pop('step4', None)
-
-    return render_template('sapsForm/resultado.html', saps_score=saps_score, mortalidade=mortalidade_estimada, resumo_ia=resumo_ia)
 
 @auth_bp.route('/pacientes')
 @login_required

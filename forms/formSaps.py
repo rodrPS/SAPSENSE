@@ -35,9 +35,6 @@ class Step1Form(FlaskForm):
                                               ('3', '3')],
                                      validators=[DataRequired(message="O leito é obrigatório")])
     data_nascimento = DateField('Data de Nascimento', validators=[DataRequired(message="Data de nascimento é obrigatória")])
-    # tipo_paciente = RadioField('Tipo de Paciente',
-    #                            choices=[('civil', 'Civil'), ('militar', 'Militar')],
-    #                            validators=[DataRequired(message="Tipo de paciente é obrigatório")])
 
     procedencia = SelectField('Procedência',
                               choices=[('', 'Selecione'), ('emergencia', 'Emergência'),

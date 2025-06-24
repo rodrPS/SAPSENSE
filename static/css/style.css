@@ -55,19 +55,22 @@ form {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 100;
     padding: 15px;
     background-color: #f8d7da;
     color: var(--vermelho-500);
     border: 1px solid #f5c6cb;
     border-radius: 5px;
     margin-bottom: 10px;
+    z-index: 10000;
+    max-width: 500px;
 }
 
 .flash-container .flash-content {
     display: flex;
     align-items: center;
     background-color: none;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .btn-primary,

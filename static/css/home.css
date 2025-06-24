@@ -132,20 +132,80 @@
 .legend .entrada { background-color: var(--azul-500); }
 .legend .saida { background-color: var(--azul-200); }
 
+
 .chart-bar-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 150px;
-    text-align: center;
-    gap: 12px;
+    height: 220px;
+    padding: 0 10px;
+    gap: 10px;
+    margin-top: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
-.bar-group { flex: 1; display: flex; justify-content: center; align-items: flex-end; gap: 4px; position: relative; padding-bottom: 20px; }
-.bar-group span { position: absolute; bottom: 0; font-size: 0.8rem; color: var(--preto-300); }
-.bar { width: 40%; border-radius: 4px; }
-.entrada-bar { background-color: var(--azul-500); }
-.saida-bar { background-color: var(--azul-200); }
 
+
+.bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+    font-size: 12px;
+    height: 100%;
+}
+
+/* Alinhar barras entrada/saída lado a lado */
+.bar-group .bar-pair {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 100%;
+}
+
+/* Cada barra */
+.group-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.bar {
+    width: 28px;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+}
+
+.entrada-bar {
+    background-color: var(--azul-500);
+}
+
+.saida-bar {
+    background-color: var(--azul-200);
+}
+
+.bar-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.entrada-bar-label {
+    color: var(--azul-500);
+}
+
+.saida-bar-label {
+    color: var(--azul-200);
+}
+
+.bar-group span {
+    margin-top: 6px;
+    font-weight: 500;
+    font-size: 12px;
+    text-align: center;
+}
 /* Resumo Pacientes */
 .resumo-list { display: flex; flex-direction: column; gap: 12px; }
 .resumo-item { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
@@ -153,6 +213,9 @@
 .progress-container { flex: 1; background-color: var(--cinza-200); height: 16px; border-radius: 8px; }
 .progress { background-color: var(--azul-500); height: 100%; border-radius: 8px; }
 .resumo-item span:last-child { font-weight: 600; width: 20px; }
+
+.h-20 { height: 20%; }
+.h-25 { height: 25%; }
 
 @media (max-width: 1092px) {
   .card-stats-group .grid {
