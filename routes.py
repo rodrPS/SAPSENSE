@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from flask_wtf.csrf import CSRFProtect
+from forms.formInternacao import InternacaoForm
 from forms.formSaps import Step1Form, Step2Form, Step3Form, Step4Form
 from forms.formHuddle import Step1Huddle, Step2Huddle, Step3Huddle, Step4Huddle
 from forms.formRegister import RegisterForm
@@ -19,6 +20,7 @@ from datetime import datetime, timedelta
 from pytz import timezone
 
 from validators.formHuddle import processar_huddle_basico, processar_huddle_completo
+from validators.formInternacao import AtualizacaoInternacaoInvalida, atualizar_internacao_com_formulario
 from validators.formSaps import FormularioIncompletoException, obter_dados_formulario, salvar_dados_saps
 
 auth_bp = Blueprint('auth', __name__)
@@ -105,14 +107,8 @@ def home_page():
 
     periodo = f"{inicio_periodo.strftime('%d/%m/%Y')} - {hoje.strftime('%d/%m/%Y')}"
 
-
-    #Pacientes
-    page = request.args.get('page', 1, type=int)
-    internacoes_paginated = Internacao.query.filter_by(data_desfecho=None).paginate(page=page, per_page=10)
-
     return render_template('home/index.html',
                             ocupados=leitos_ocupados,
-                            internacoes_paginated=internacoes_paginated,
                             entradas_por_dia=entradas_por_dia,
                             saidas_por_dia=saidas_por_dia,
                             dias_semana=dias_semana,
@@ -250,6 +246,49 @@ def lista_pacientes():
     internacoes_paginated = Internacao.query.filter_by(data_desfecho=None).paginate(page=page, per_page=10)
 
     return render_template('pacientes/index.html', internacoes_paginated=internacoes_paginated)
+
+@auth_bp.route('/pacientes/<int:id>/atualizar', methods=['GET', 'POST'])
+@login_required
+def atualizar_paciente(id):
+    form = InternacaoForm()
+    internacao = Internacao.query.get_or_404(id)
+    paciente = internacao.paciente
+    saps_score = internacao.saps_score or 0
+    mortalidade_estimada = internacao.mortalidade_estimada or 0.0
+
+    if form.validate_on_submit():
+        try:
+            atualizar_internacao_com_formulario(form)
+            return jsonify(success=True)
+        except AtualizacaoInternacaoInvalida as e:
+            return jsonify(success=False, error=str(e))
+    elif request.method == "POST":
+        html = render_template('pacientes/modal_editar.html',
+                               form=form,
+                               internacao_id=internacao.id,
+                               saps_score=saps_score,
+                               mortalidade_estimada=mortalidade_estimada)
+        return jsonify(success=False, html=html)
+
+    # GET
+    form.id.data = internacao.id
+    form.nome.data = paciente.nome
+    form.data_nascimento.data = paciente.data_nascimento.strftime("%d/%m/%Y")
+    form.leito.data = internacao.leito
+    form.procedencia.data = internacao.procedencia
+    form.data_admissao.data = internacao.data_admissao.strftime("%d/%m/%Y")
+    form.reinternacao.data = "sim" if internacao.reinternacao else "nao"
+    form.diagnostico_atual.data = internacao.diagnostico_atual or ""
+    form.data_desfecho.data = internacao.data_desfecho
+    form.desfecho.data = internacao.desfecho or ""
+    form.destino.data = internacao.destino or ""
+
+    html = render_template('pacientes/modal_editar.html',
+                           form=form,
+                           internacao_id=internacao.id,
+                           saps_score=saps_score,
+                           mortalidade_estimada=mortalidade_estimada)
+    return html
 
 @auth_bp.route('/atribuir-responsavel', methods=['POST'])
 @login_required

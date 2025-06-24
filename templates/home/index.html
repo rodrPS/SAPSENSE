@@ -126,61 +126,6 @@
             </div>
         </div>
     </div>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Leito</th>
-                    <th>Nome</th>
-                    <th>Responsável</th>
-                    <th>Internado(a) em</th>
-                    <th>Resultado SAPS</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in internacoes_paginated.items %}
-                <tr>
-                    <td>{{ i.leito }}</td>
-                    <td>{{ i.paciente.nome }}</td>
-                    <td>
-                    {% if i.responsavel %}
-                        {{ i.responsavel }}
-                        <a onclick="abrirModal('{{ i.id }}')">
-                            <svg style="width: 20px; height: 20px;" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.862 4.487c.637-.637 1.67-.637 2.308 0l.343.343a1.625 1.625 0 010 2.298l-.859.86m-1.792-3.501L5.634 15.13a4.5 4.5 0 00-1.128 1.84l-.492 1.476a.75.75 0 00.948.949l1.475-.492a4.5 4.5 0 001.84-1.128L19.378 7.61m-3.501-1.792l1.792 1.792" />
-                            </svg>
-                        </a>
-                    {% else %}
-                        <button class="btn-primary atribuir" onclick="abrirModal('{{ i.id }}')">Atribuir</button>
-                    {% endif %}
-                    </td>
-                    <td>{{ i.data_admissao.strftime('%d/%m/%Y') }}</td>
-                    <td class="{% if i.saps_score and i.saps_score > 53 %}danger{% endif %}">
-                        {% if i.saps_score and i.mortalidade_estimada %}
-                            {{ i.saps_score }} ({{ "%.2f"|format(i.mortalidade_estimada) }}%)
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="pagination">
-            {% if internacoes_paginated.has_prev %}
-                <a href="{{ url_for('auth.lista_pacientes', page=internacoes_paginated.prev_num) }}">Anterior</a>
-            {% endif %}
-            {% for p in range(1, internacoes_paginated.pages + 1) %}
-                <a href="{{ url_for('auth.lista_pacientes', page=p) }}" class="{% if p == internacoes_paginated.page %}active{% endif %}">{{ p }}</a>
-            {% endfor %}
-            {% if internacoes_paginated.has_next %}
-                <a href="{{ url_for('auth.lista_pacientes', page=internacoes_paginated.next_num) }}">Próximo</a>
-            {% endif %}
-        </div>
-    </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/pacientes.js') }}"></script>

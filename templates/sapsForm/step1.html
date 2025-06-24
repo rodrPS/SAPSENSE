@@ -74,17 +74,6 @@
                     <small class="text-danger">{{ error }}</small>
                 {% endfor %}
             </div>
-            <div class="form-group">
-                {{ form.registro.label }}
-                {{ form.registro(class_="form-control", placeholder="Número de registro") }}
-                {% for error in form.registro.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- CARD 4 -->
-        <div class="form-card col">
             <div class="form-group-radio">
                 <p>{{ form.reinternacao.label.text }}</p>
                 {% for subfield in form.reinternacao %}
@@ -99,7 +88,7 @@
         </div>
 
         <div class="form-footer">
-            <button type="submit" class="btn-primary">Continuar</button>
+            <button type="submit" class="btn-primary" id="submit-huddle" style="justify-self: flex-end;">Próximo</button>
         </div>
     </form>
 </div>

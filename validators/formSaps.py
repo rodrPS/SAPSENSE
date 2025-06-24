@@ -15,8 +15,7 @@ def obter_dados_formulario():
         dados.update(session.get(step, {}))
 
     campos_obrigatorios = [
-        'cpf', 'nome', 'leito', 'data_nascimento', 'procedencia', 'data_admissao',
-        'registro', 'reinternacao',
+        'cpf', 'nome', 'leito', 'data_nascimento', 'procedencia', 'data_admissao', 'reinternacao',
         'duracao_internacao', 'local_previo', 'terapia_cancer', 'cancer_metastatico',
         'insuficiencia_cardiaca', 'cirrose', 'aids', 'drogas_vasoativas',
         'admissao_planejada', 'motivos_admissao', 'cirurgia_realizada', 'infeccao_aguda',

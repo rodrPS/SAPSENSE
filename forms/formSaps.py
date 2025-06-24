@@ -43,7 +43,6 @@ class Step1Form(FlaskForm):
                               validators=[DataRequired(message="Procedência é obrigatória")])
 
     data_admissao = DateField('Data de Admissão', validators=[DataRequired(message="Data de admissão é obrigatória")])
-    registro = StringField('Nº de Registro', validators=[DataRequired(message="Número de registro é obrigatório")])
     reinternacao = RadioField('Reinternação em Menos de 24h',
                               choices=[('sim', 'Sim'), ('nao', 'Não')],
                               validators=[DataRequired(message="Informe se houve reinternação")])

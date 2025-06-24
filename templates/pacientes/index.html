@@ -4,6 +4,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pacientes.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -44,7 +45,7 @@
             </thead>
             <tbody>
                 {% for i in internacoes_paginated.items %}
-                <tr>
+                <tr onclick="abrirModalPaciente({{ i.id }})">
                     <td>{{ i.leito }}</td>
                     <td>{{ i.paciente.nome }}</td>
                     <td>
@@ -103,6 +104,7 @@
     <p id="erroModal" style="color:red;"></p>
   </div>
 </div>
+<div id="modalPacienteContainer"></div>
 
 <script src="{{ url_for('static', filename='js/pacientes.js') }}"></script>
 {% endblock %}

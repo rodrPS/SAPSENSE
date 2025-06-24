@@ -32,3 +32,39 @@ button.editar-responsavel:hover {
   margin-top: -8px;
   margin-bottom: 8px;
 }
+
+
+/* Modal Paciente */
+
+.card-resultado {
+    background-color: var(--azul-500);
+    color: white;
+    border-radius: 16px;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.card-resultado .score,
+.card-resultado .mortalidade {
+    flex: 1;
+}
+
+.card-resultado h2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-resultado .valor {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.form-modal{
+    max-width: none;
+}

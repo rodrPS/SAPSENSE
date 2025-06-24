@@ -80,10 +80,13 @@ class Internacao(db.Model):
     plaquetas = db.Column(db.String(50), nullable=False)
     oxigenacao = db.Column(db.String(50), nullable=False)
 
+    diagnostico_atual = db.Column(db.String(512), nullable=True)
     responsavel = db.Column(db.String(120), nullable=True)
     desfecho = db.Column(db.String(120), nullable=True)
     data_desfecho = db.Column(db.Date, nullable=True)
     destino = db.Column(db.String(120), nullable=True)
+    lpp_admissao = db.Column(db.Boolean, nullable=True)
+    lpp_alta = db.Column(db.Boolean, nullable=True)
 
     saps_score = db.Column(db.Integer, nullable=True)
     mortalidade_estimada = db.Column(db.Float, nullable=True)

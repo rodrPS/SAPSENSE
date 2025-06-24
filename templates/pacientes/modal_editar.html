@@ -1,0 +1,121 @@
+<div id="modalPaciente" class="modal">
+  <div class="modal-content form-modal">
+    <div class="card-resultado">
+      <div class="score">
+        <h2>
+          <img src="{{ url_for('static', filename='img/calculator.svg') }}" alt="Mortalidade Icon">
+          Resultado do SAPS 3
+        </h2>
+        <div class="valor">{{ saps_score }} <span style="font-size: 16px; font-weight: normal;">pontos</span></div>
+      </div>
+      <div class="mortalidade">
+        <h2>Chance de Mortalidade</h2>
+        <div class="valor">{{ "%.0f"|format(mortalidade_estimada) }}%</div>
+      </div>
+    </div>
+    <form method="POST" action="{{ url_for('auth.atualizar_paciente', id=internacao_id) }}">
+      {{ form.hidden_tag() }}
+
+      <div class="form-card form-card-modal">
+        <div class="form-group">
+          {{ form.nome.label }} {{ form.nome }}
+        </div>
+        <div class="form-group">
+          {{ form.data_nascimento.label }} {{ form.data_nascimento }}
+        </div>
+      </div>
+
+      <div class="form-card form-card-modal">
+        <div class="form-group">
+          {{ form.procedencia.label }} {{ form.procedencia }}
+        </div>
+        <div class="form-group">
+          {{ form.data_admissao.label }} {{ form.data_admissao }}
+        </div>
+      </div>
+
+      <div class="form-card form-card-modal">
+        <div class="form-group-radio">
+          <p>{{ form.reinternacao.label.text }}</p>
+          <div class="form-group-radio-items">
+            {% for subfield in form.reinternacao %}
+              <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+            {% endfor %}
+          </div>
+          {% for error in form.reinternacao.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ✏️ Campos editáveis -->
+      <div class="form-card form-card-modal">
+        <div class="form-group-radio">
+          <p>{{ form.lpp_admissao.label.text }}</p>
+          <div class="form-group-radio-items">
+            {% for subfield in form.lpp_admissao %}
+              <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+            {% endfor %}
+          </div>
+          {% for error in form.lpp_admissao.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="form-group-radio">
+          <p>{{ form.lpp_alta.label.text }}</p>
+          <div class="form-group-radio-items">
+            {% for subfield in form.lpp_alta %}
+              <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
+            {% endfor %}
+          </div>
+          {% for error in form.lpp_alta.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-card form-card-modal">
+        <div class="form-group">
+          {{ form.diagnostico_atual.label }}
+          {{ form.diagnostico_atual(class_="form-control") }}
+          {% for error in form.diagnostico_atual.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-card form-card-modal">
+        <div class="form-group">
+          {{ form.desfecho.label }}
+          {{ form.desfecho(class_="form-control") }}
+          {% for error in form.desfecho.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-card form-card-modal">
+        <div class="form-group">
+          {{ form.data_desfecho.label }}
+          {{ form.data_desfecho(class_="form-control") }}
+          {% for error in form.data_desfecho.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.destino.label }}
+          {{ form.destino(class_="form-control") }}
+          {% for error in form.destino.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button type="button" class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <button type="submit" class="btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
