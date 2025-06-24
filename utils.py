@@ -4,6 +4,9 @@ from datetime import datetime
 import math
 from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
+import openai
+import os
+import httpx
 
 def gerar_token(email):
     s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -19,6 +22,76 @@ def validar_token(token, expiration=3600):
 
 def str_to_bool(valor):
     return valor.lower() == 'sim'
+
+def gerar_resumo_ia(dados, saps_score, mortalidade):
+    """
+    Gera um resumo clínico do paciente usando a API da OpenAI.
+    """
+    try:
+        # Pega a configuração de proxy do ambiente
+        http_proxy = os.environ.get('http_proxy')
+        https_proxy = os.environ.get('https_proxy')
+        proxies = {
+            'http://': http_proxy,
+            'https://': https_proxy
+        } if http_proxy and https_proxy else None
+
+        # 1. Crie um cliente httpx com os proxies, se eles existirem.
+        http_client = httpx.Client(proxies=proxies) if proxies else None
+
+        # 2. Passe o http_client para o cliente da OpenAI.
+        client = openai.OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            http_client=http_client
+        )
+
+        # --- Preparar dados para o prompt ---
+        data_nascimento_str = dados.get('data_nascimento', "Sun, 01 Jan 1900 00:00:00 GMT")
+        data_admissao_str = dados.get('data_admissao', "Sun, 01 Jan 1900 00:00:00 GMT")
+        data_nascimento = datetime.strptime(data_nascimento_str, "%a, %d %b %Y %H:%M:%S GMT").date()
+        data_admissao = datetime.strptime(data_admissao_str, "%a, %d %b %Y %H:%M:%S GMT").date()
+        idade = int((data_admissao - data_nascimento).days / 365.25)
+
+        comorbidades = []
+        if str_to_bool(dados.get('terapia_cancer', 'nao')): comorbidades.append("terapia contra câncer")
+        if str_to_bool(dados.get('cancer_metastatico', 'nao')): comorbidades.append("câncer metastático")
+        if str_to_bool(dados.get('insuficiencia_cardiaca', 'nao')): comorbidades.append("insuficiência cardíaca classe IV")
+        if str_to_bool(dados.get('cirrose', 'nao')): comorbidades.append("cirrose")
+        if str_to_bool(dados.get('aids', 'nao')): comorbidades.append("AIDS")
+        comorbidades_str = ", ".join(comorbidades) if comorbidades else "nenhuma registrada"
+
+        motivos_admissao = ", ".join(dados.get('motivos_admissao', ['não especificado']))
+
+        # --- Construir o Prompt ---
+        prompt_text = (
+            f"Com base nos seguintes dados de um paciente recém-admitido na UTI, gere um resumo conciso "
+            f"(em 2 ou 3 frases) do estado clínico do paciente em português. Foque nos pontos mais críticos.\n\n"
+            f"**Dados do Paciente:**\n"
+            f"- **Idade:** {idade} anos\n"
+            f"- **Comorbidades:** {comorbidades_str}\n"
+            f"- **Motivos da Admissão:** {motivos_admissao}\n"
+            f"- **Escala de Glasgow:** {dados.get('glasgow', 'não informado')}\n"
+            f"- **Pressão Arterial Sistólica:** {dados.get('pressao_sistolica', 'não informada')}\n"
+            f"- **Pontuação SAPS 3:** {saps_score}\n"
+            f"- **Mortalidade Estimada:** {mortalidade:.2f}%\n\n"
+            f"**Resumo Sugerido:**"
+        )
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Você é um assistente médico especialista em terapia intensiva. Sua tarefa é gerar um resumo clínico objetivo e conciso."},
+                {"role": "user", "content": prompt_text}
+            ],
+            max_tokens=150,
+            temperature=0.7,
+            n=1
+        )
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        current_app.logger.error(f"Erro ao gerar resumo da OpenAI: {e}")
+        return "Não foi possível gerar o resumo por IA neste momento."
 
 def calcular_saps3(dados):
     """

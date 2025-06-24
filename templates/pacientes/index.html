@@ -56,8 +56,12 @@
                     {% endif %}
                     </td>
                     <td>{{ i.data_admissao.strftime('%d/%m/%Y') }}</td>
-                    <td class="{% if i.saps_resultado and i.saps_resultado < 30 %}danger{% endif %}">
-                        {{ i.saps_resultado or '80 (80%)' }}
+                    <td class="{% if i.saps_score and i.saps_score > 53 %}danger{% endif %}">
+                        {% if i.saps_score and i.mortalidade_estimada %}
+                            {{ i.saps_score }} ({{ "%.2f"|format(i.mortalidade_estimada) }}%)
+                        {% else %}
+                            N/A
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

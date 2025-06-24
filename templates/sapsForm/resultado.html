@@ -38,6 +38,26 @@
     .resultado-valor-mortalidade {
         color: var(--vermelho-500);
     }
+    /* Estilos para o novo container de resumo da IA */
+    .resumo-ia-container {
+        margin-top: 24px;
+        padding: 20px;
+        background-color: var(--cinza-100);
+        border-radius: 12px;
+        text-align: left;
+        border-left: 5px solid var(--azul-500);
+        width: 100%;
+    }
+    .resumo-ia-container h3 {
+        font-size: 16px;
+        color: var(--preto-500);
+        margin-bottom: 8px;
+    }
+    .resumo-ia-container p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--preto-400);
+    }
 </style>
 {% endblock %}
 
@@ -55,6 +75,13 @@
             <p class="resultado-label">Estimativa de Mortalidade</p>
             <p class="resultado-valor resultado-valor-mortalidade">{{ "%.2f"|format(mortalidade) }}%</p>
         </div>
+
+        {% if resumo_ia %}
+        <div class="resumo-ia-container">
+            <h3>Resumo por IA</h3>
+            <p>{{ resumo_ia }}</p>
+        </div>
+        {% endif %}
 
         <a href="{{ url_for('auth.home_page') }}" class="btn-primary" style="margin-top: 20px;">Voltar para a Home</a>
     </div>
