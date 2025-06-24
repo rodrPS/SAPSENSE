@@ -13,7 +13,7 @@ from models import User, Paciente, Internacao, Huddle
 from extensions import db, mail
 from werkzeug.utils import secure_filename
 import os
-from utils import str_to_bool, gerar_token, validar_token, calcular_saps3
+from utils import str_to_bool, gerar_token, validar_token, calcular_saps3, gerar_resumo_ia
 from datetime import datetime
 
 from validators.formHuddle import processar_huddle_basico, processar_huddle_completo
@@ -171,6 +171,8 @@ def resumo():
 
     saps_score, mortalidade_estimada = calcular_saps3(dados)
 
+    resumo_ia = gerar_resumo_ia(dados, saps_score, mortalidade_estimada)
+
     # Verifica se o paciente já existe
     paciente = Paciente.query.filter_by(cpf=dados['cpf']).first()
     if not paciente:
@@ -234,7 +236,7 @@ def resumo():
     session.pop('step3', None)
     session.pop('step4', None)
 
-    return render_template('sapsForm/resultado.html', saps_score=saps_score, mortalidade=mortalidade_estimada)
+    return render_template('sapsForm/resultado.html', saps_score=saps_score, mortalidade=mortalidade_estimada, resumo_ia=resumo_ia)
 
 @auth_bp.route('/pacientes')
 @login_required
