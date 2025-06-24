@@ -50,6 +50,9 @@
 
         <div class="form-card col resumo-detalhado">
             <label>{{ form.equipe_huddle.label }}</label>
+            {% for error in form.equipe_huddle.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
             <div class="checkbox-grid-2col">
                 {% for subfield in form.equipe_huddle %}
                     <label class="custom-checkbox">
@@ -57,19 +60,16 @@
                     </label>
                 {% endfor %}
             </div>
-            {% for error in form.equipe_huddle.errors %}
-                <small class="text-danger">{{ error }}</small>
-            {% endfor %}
         </div>
 
         <div class="form-card resumo-detalhado">
             <div class="form-group">
                 {{ form.tecnicos_enfermagem.label }}
                 {{ form.tecnicos_enfermagem(class_="form-control") }}
+                {% for error in form.tecnicos_enfermagem.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
             </div>
-            {% for error in form.equipe_huddle.errors %}
-                <small class="text-danger">{{ error }}</small>
-            {% endfor %}
         </div>
 
         <div class="form-footer">

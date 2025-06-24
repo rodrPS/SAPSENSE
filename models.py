@@ -91,6 +91,61 @@ class Internacao(db.Model):
     def __repr__(self):
         return f"<Internacao {self.id} - Paciente {self.paciente_id}>"
 
+class Huddle(db.Model):
+    __tablename__ = 'huddle'
+
+    id = db.Column(db.Integer, primary_key=True)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+
+    turno = db.Column(db.String(10), nullable=False)
+    equipe_compareceu = db.Column(db.String(5), nullable=False)
+    equipe_huddle = db.Column(db.JSON, nullable=True)
+    tecnicos_enfermagem = db.Column(db.Integer, nullable=True)
+
+    ha_leitos_bloqueados = db.Column(db.String(5), nullable=True)
+    qtd_leitos_bloqueados = db.Column(db.Integer, nullable=True)
+    motivo_bloqueio = db.Column(db.String(255), nullable=True)
+
+    altas_confirmadas = db.Column(db.Integer, nullable=True)
+    altas_aval = db.Column(db.Integer, nullable=True)
+
+    houve_solicitacao_vaga = db.Column(db.String(5), nullable=True)
+    qtd_solicitacoes = db.Column(db.Integer, nullable=True)
+    origem_solicitacoes = db.Column(db.String(255), nullable=True)
+
+    exames_programados = db.Column(db.String(5), nullable=True)
+    qtd_exames = db.Column(db.Integer, nullable=True)
+    quais_exames = db.Column(db.String(255), nullable=True)
+
+    mais_graves = db.Column(db.Integer, nullable=True)
+    em_isolamento = db.Column(db.Integer, nullable=True)
+    em_dialise = db.Column(db.Integer, nullable=True)
+    usando_svd = db.Column(db.Integer, nullable=True)
+    usando_cvc = db.Column(db.Integer, nullable=True)
+
+    retirada_svd = db.Column(db.String(5), nullable=True)
+    pacientes_retirada_svd = db.Column(db.String(255), nullable=True)
+
+    retirada_cvc = db.Column(db.String(5), nullable=True)
+    pacientes_retirada_cvc = db.Column(db.String(255), nullable=True)
+
+    despertar_diario = db.Column(db.String(5), nullable=True)
+    pacientes_despertar_diario = db.Column(db.String(255), nullable=True)
+
+    ventilacao_mecanica = db.Column(db.Integer, nullable=True)
+    ims_maior_igual_4 = db.Column(db.Integer, nullable=True)
+    progressao_funcional = db.Column(db.Integer, nullable=True)
+
+    evento_adverso = db.Column(db.String(5), nullable=True)
+
+    problema_unidade = db.Column(db.String(5), nullable=True)
+    descricao_unidade = db.Column(db.String(255), nullable=True)
+
+    problema_hospital = db.Column(db.String(5), nullable=True)
+    descricao_hospital = db.Column(db.String(255), nullable=True)
+
+    outro_problema = db.Column(db.String(255), nullable=True)
+
 # O user_loader é movido para cá para ficar junto do modelo User.
 # Ele informa ao Flask-Login como encontrar um usuário específico a partir do ID
 # que é armazenado em sua sessão.

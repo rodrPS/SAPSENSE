@@ -19,6 +19,9 @@
     <li>
       <a href="{{ url_for('auth.admin') }}" class="{% if path.startswith('/admin') %}active{% endif %}">Administração</a>
     </li>
+    <li>
+      <a href="{{ url_for('auth.huddle_form') }}" class="{% if path.startswith('/huddle-form') %}active{% endif %}">Preencher Huddle</a>
+    </li>
   </ul>
 
   <div class="navbar-user" onclick="toggleDropdown()">

@@ -20,11 +20,26 @@
         {{ form.hidden_tag() }}
 
         <div class="form-card">
-            <div class="form-group">{{ form.mais_graves.label }} {{ form.mais_graves }}</div>
-            <div class="form-group">{{ form.em_isolamento.label }} {{ form.em_isolamento }}</div>
-            <div class="form-group">{{ form.em_dialise.label }} {{ form.em_dialise }}</div>
-            <div class="form-group">{{ form.usando_svd.label }} {{ form.usando_svd }}</div>
-            <div class="form-group">{{ form.usando_cvc.label }} {{ form.usando_cvc }}</div>
+            <div class="form-group">
+                {{ form.mais_graves.label }} {{ form.mais_graves }}
+                {% for error in form.mais_graves.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.em_isolamento.label }} {{ form.em_isolamento }}
+                {% for error in form.em_isolamento.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.em_dialise.label }} {{ form.em_dialise }}
+                {% for error in form.em_dialise.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.usando_svd.label }} {{ form.usando_svd }}
+                {% for error in form.usando_svd.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.usando_cvc.label }} {{ form.usando_cvc }}
+                {% for error in form.usando_cvc.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
@@ -35,8 +50,12 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.retirada_svd.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
-            <div class="form-group">{{ form.pacientes_retirada_svd.label }} {{ form.pacientes_retirada_svd }}</div>
+            <div class="form-group">
+                {{ form.pacientes_retirada_svd.label }} {{ form.pacientes_retirada_svd }}
+                {% for error in form.pacientes_retirada_svd.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
@@ -47,8 +66,12 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.retirada_cvc.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
-            <div class="form-group">{{ form.pacientes_retirada_cvc.label }} {{ form.pacientes_retirada_cvc }}</div>
+            <div class="form-group">
+                {{ form.pacientes_retirada_cvc.label }} {{ form.pacientes_retirada_cvc }}
+                {% for error in form.pacientes_retirada_cvc.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
@@ -59,20 +82,33 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.despertar_diario.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
-            <div class="form-group">{{ form.pacientes_despertar_diario.label }} {{ form.pacientes_despertar_diario }}</div>
+            <div class="form-group">
+                {{ form.pacientes_despertar_diario.label }} {{ form.pacientes_despertar_diario }}
+                {% for error in form.pacientes_despertar_diario.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
-            <div class="form-group">{{ form.ventilacao_mecanica.label }} {{ form.ventilacao_mecanica }}</div>
-            <div class="form-group">{{ form.ims_maior_igual_4.label }} {{ form.ims_maior_igual_4 }}</div>
-            <div class="form-group">{{ form.progressao_funcional.label }} {{ form.progressao_funcional }}</div>
+            <div class="form-group">
+                {{ form.ventilacao_mecanica.label }} {{ form.ventilacao_mecanica }}
+                {% for error in form.ventilacao_mecanica.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.ims_maior_igual_4.label }} {{ form.ims_maior_igual_4 }}
+                {% for error in form.ims_maior_igual_4.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.progressao_funcional.label }} {{ form.progressao_funcional }}
+                {% for error in form.progressao_funcional.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
-
 
         <div class="form-footer">
             <button type="submit" class="btn-primary">Próximo</button>
         </div>
     </form>
 </div>
+<script src="{{ url_for('static', filename='js/huddleForm3.js') }}"></script>
 {% endblock %}

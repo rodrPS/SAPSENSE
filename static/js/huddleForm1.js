@@ -1,19 +1,36 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const radios = document.querySelectorAll('#equipe-compareceu-radio input[type="radio"]');
-    const detalhes = document.getElementsByClassName("resumo-detalhado");
-    const botao = document.getElementById("submit-huddle");
+document.addEventListener('DOMContentLoaded', function() {
+    const equipeCompareceuRadios = document.querySelectorAll('input[name="equipe_compareceu"]');
+    const submitButton = document.getElementById('submit-huddle');
+    const resumoDetalhadoSections = document.querySelectorAll('.resumo-detalhado');
 
-    function verificarSelecao() {
-        const selecionado = [...radios].find(r => r.checked);
-        if (selecionado && selecionado.value === "nao") {
-            detalhes.forEach(d => d.classList.add('hidden'));
-            botao.textContent = "Enviar";
+    function checkEquipeCompareceu() {
+        let equipeCompareceuValue = '';
+        equipeCompareceuRadios.forEach(radio => {
+            if (radio.checked) {
+                equipeCompareceuValue = radio.value;
+            }
+        });
+
+        if (equipeCompareceuValue === 'nao') {
+            resumoDetalhadoSections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            if (submitButton) {
+                submitButton.textContent = 'Enviar';
+            }
         } else {
-            detalhes.forEach(d => d.classList.remove('hidden'));
-            botao.textContent = "Próximo";
+            resumoDetalhadoSections.forEach(section => {
+                section.classList.remove('hidden');
+            });
+            if (submitButton) {
+                submitButton.textContent = 'Próximo';
+            }
         }
     }
 
-    radios.forEach(r => r.addEventListener("change", verificarSelecao));
-    verificarSelecao();
+    equipeCompareceuRadios.forEach(radio => {
+        radio.addEventListener('change', checkEquipeCompareceu);
+    });
+
+    checkEquipeCompareceu();
 });

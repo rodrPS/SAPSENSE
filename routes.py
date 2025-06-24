@@ -9,12 +9,16 @@ from forms.formHuddle import Step1Huddle, Step2Huddle, Step3Huddle, Step4Huddle
 from forms.formRegister import RegisterForm
 from datetime import datetime
 from sqlalchemy import asc
-from models import User, Paciente, Internacao
+from models import User, Paciente, Internacao, Huddle
 from extensions import db, mail
 from werkzeug.utils import secure_filename
 import os
 from utils import str_to_bool, gerar_token, validar_token, calcular_saps3
 from datetime import datetime
+
+from validators.formHuddle import processar_huddle_basico, processar_huddle_completo
+
+
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/')
@@ -109,6 +113,15 @@ def huddle_form():
         form = Step1Huddle()
         if form.validate_on_submit():
             session['step1'] = form.data
+
+            if form.equipe_compareceu.data == 'nao':
+                    try:
+                        processar_huddle_basico(form.data)
+                        flash("Huddle registrado com sucesso!", "success")
+                        return redirect(url_for('auth.home_page'))
+                    except Exception as e:
+                        flash("Erro ao registrar o Huddle: " + str(e), "danger")
+                        return redirect(url_for('auth.huddle_form', step=1))
             return redirect(url_for('auth.huddle_form', step=2))
         return render_template('huddleForm/step1.html', form=form)
 
@@ -130,7 +143,18 @@ def huddle_form():
         form = Step4Huddle()
         if form.validate_on_submit():
             session['step4'] = form.data
-            return redirect(url_for('auth.resumo'))
+            dados = {**session['step1'], **session['step2'], **session['step3'], **form.data}
+            try:
+                processar_huddle_completo(dados)
+                flash("Huddle completo registrado com sucesso!", "success")
+                session.pop('step1', None)
+                session.pop('step2', None)
+                session.pop('step3', None)
+                session.pop('step4', None)
+                return redirect(url_for('auth.huddle_confirmado'))
+            except Exception as e:
+                flash("Erro ao salvar o Huddle: " + str(e), "danger")
+                return redirect(url_for('auth.huddle_form', step=4))
         return render_template('huddleForm/step4.html', form=form)
 
     # fallback

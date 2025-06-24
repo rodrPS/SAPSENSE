@@ -13,13 +13,13 @@
         <div class="form-progress">
             <div class="form-progress-bar" style="width: 100%;"></div>
         </div>
-        <p class="form-step-title">Adversidades</p>
+        <p class="form-step-title">Problemas e eventos adversos</p>
     </header>
 
     <form method="POST" class="form-step">
         {{ form.hidden_tag() }}
 
-         <div class="form-card">
+        <div class="form-card">
             <div class="form-group-radio">
                 <p>{{ form.evento_adverso.label.text }}</p>
                 <div class="form-group-radio-items">
@@ -27,6 +27,7 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.evento_adverso.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
         </div>
 
@@ -38,8 +39,12 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.problema_unidade.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
-            <div class="form-group">{{ form.descricao_unidade.label }} {{ form.descricao_unidade(class_="form-control") }}</div>
+            <div class="form-group">
+                {{ form.descricao_unidade.label }} {{ form.descricao_unidade(id="descricao_unidade") }}
+                {% for error in form.descricao_unidade.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
@@ -50,16 +55,25 @@
                         <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
                     {% endfor %}
                 </div>
+                {% for error in form.problema_hospital.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
             </div>
-            <div class="form-group">{{ form.descricao_hospital.label }} {{ form.descricao_hospital(class_="form-control") }}</div>
+            <div class="form-group">
+                {{ form.descricao_hospital.label }} {{ form.descricao_hospital(id="descricao_hospital") }}
+                {% for error in form.descricao_hospital.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
 
         <div class="form-card">
-            <div class="form-group">{{ form.outro_problema.label }} {{ form.outro_problema(class_="form-control") }}</div>
+            <div class="form-group">
+                {{ form.outro_problema.label }} {{ form.outro_problema }}
+                {% for error in form.outro_problema.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+            </div>
         </div>
+
         <div class="form-footer">
-            <button type="submit" class="btn-primary">Enviar Huddle</button>
+            <button type="submit" class="btn-primary">Finalizar</button>
         </div>
     </form>
 </div>
+<script src="{{ url_for('static', filename='js/huddleForm4.js') }}"></script>
 {% endblock %}
