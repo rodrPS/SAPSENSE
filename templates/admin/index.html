@@ -15,22 +15,19 @@
 
     <div class="stats-cards">
         <div class="card">
-            <h1>{{ users_paginated.total }}</h1>
+            <h1>{{ stats.enfermeiros }}</h1>
             <p>Enfermeiros</p>
         </div>
         <div class="card">
-            <h1>{{ users_paginated.total }}</h1>
+            <h1>{{ stats.medicos }}</h1>
             <p>Médicos</p>
         </div>
         <div class="card">
-            <h1>{{ 20 - users_paginated.total }}</h1>
+            <h1>{{ stats.administradores }}</h1>
             <p>Administradores</p>
         </div>
     </div>
     <div class="table-wrapper">
-        <!-- <div class="search-box form-group">
-            <input type="text" placeholder="Buscar Usuário">
-        </div> -->
         <table>
             <thead>
                 <tr>
@@ -43,23 +40,12 @@
                 {% for user in users_paginated.items %}
                 <tr>
                     <td>{{ user.nome }}</td>
-                    <td>{{ user.tipo }}</td>
+                    <td>{{ user.tipo.replace('_', ' ').title() }}</td>
                     <td>{{ user.email }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <!-- <div class="pagination">
-            {% if users_paginated.has_prev %}
-                <a href="{{ url_for('auth.lista_pacientes', page=users_paginated.prev_num) }}">Anterior</a>
-            {% endif %}
-            {% for p in range(1, users_paginated.pages + 1) %}
-                <a href="{{ url_for('auth.lista_pacientes', page=p) }}" class="{% if p == users_paginated.page %}active{% endif %}">{{ p }}</a>
-            {% endfor %}
-            {% if users_paginated.has_next %}
-                <a href="{{ url_for('auth.lista_pacientes', page=users_paginated.next_num) }}">Próximo</a>
-            {% endif %}
-        </div> -->
     </div>
 </div>
 
@@ -71,23 +57,23 @@
         {{ form.hidden_tag() }}
 
         <div class="form-group">
-            {{ form.nome.label }} {{ form.nome }}
+            {{ form.nome.label }} {{ form.nome(class="form-control") }}
         </div>
 
         <div class="form-group">
-            {{ form.tipo.label }} {{ form.tipo }}
+            {{ form.tipo.label }} {{ form.tipo(class="form-control") }}
         </div>
 
         <div class="form-group">
-            {{ form.username.label }} {{ form.username }}
+            {{ form.username.label }} {{ form.username(class="form-control") }}
         </div>
 
         <div class="form-group">
-            {{ form.email.label }} {{ form.email }}
+            {{ form.email.label }} {{ form.email(class="form-control") }}
         </div>
 
         <div class="form-group">
-            {{ form.senha.label }} {{ form.senha }}
+            {{ form.senha.label }} {{ form.senha(class="form-control") }}
         </div>
     </form>
     <div class="modal-actions">

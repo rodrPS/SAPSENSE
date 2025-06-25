@@ -24,7 +24,7 @@
                 <p>{{ form.turno.label.text }}</p>
                 <div class="form-group-radio-items">
                     {% for subfield in form.turno %}
-                        <label class="custom-checkbox">
+                        <label class="custom-radio">
                             {{ subfield(required=False) }} {{ subfield.label.text }}
                         </label>
                     {% endfor %}
@@ -49,26 +49,56 @@
         </div>
 
         <div class="form-card col resumo-detalhado">
-            <label>{{ form.equipe_huddle.label }}</label>
-            {% for error in form.equipe_huddle.errors %}
+            <label>Informe a quantidade de cada profissional presente:</label>
+            {% for error in form.qtd_medicos.errors %}
                 <small class="text-danger">{{ error }}</small>
             {% endfor %}
+            
             <div class="checkbox-grid-2col">
-                {% for subfield in form.equipe_huddle %}
-                    <label class="custom-checkbox">
-                        {{ subfield(required=False) }} {{ subfield.label.text }}
-                    </label>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="form-card resumo-detalhado">
-            <div class="form-group">
-                {{ form.tecnicos_enfermagem.label }}
-                {{ form.tecnicos_enfermagem(class_="form-control") }}
-                {% for error in form.tecnicos_enfermagem.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                <div class="form-group">
+                    {{ form.qtd_medicos.label }}
+                    {{ form.qtd_medicos(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_direcao.label }}
+                    {{ form.qtd_direcao(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_enfermeiros.label }}
+                    {{ form.qtd_enfermeiros(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_nucleo_seguranca.label }}
+                    {{ form.qtd_nucleo_seguranca(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_fisioterapeutas.label }}
+                    {{ form.qtd_fisioterapeutas(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_nutricionistas.label }}
+                    {{ form.qtd_nutricionistas(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.tecnicos_enfermagem.label }}
+                    {{ form.tecnicos_enfermagem(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_fonoaudiologos.label }}
+                    {{ form.qtd_fonoaudiologos(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_coras.label }}
+                    {{ form.qtd_coras(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_assistente_social.label }}
+                    {{ form.qtd_assistente_social(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.qtd_nir.label }}
+                    {{ form.qtd_nir(class="form-control") }}
+                </div>
             </div>
         </div>
 

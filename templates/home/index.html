@@ -27,7 +27,7 @@
                         <p>Total</p>
                     </div>
                     <div class="card">
-                        <h1>{{ 20 - ocupados }}</h1>
+                        <h1>{{ ocupados }}</h1>
                         <p>Ocupados</p>
                     </div>
                     <div class="card">
@@ -40,30 +40,12 @@
         <div class="card-stats-group">
             <h2>Resumo de Profissionais</h2>
             <div class="grid">
+                {% for nome, qtd in profissionais.items() %}
                 <div class="card">
-                    <h1>2</h1>
-                    <p>Médicos</p>
+                    <h1>{{ qtd }}</h1>
+                    <p>{{ nome }}</p>
                 </div>
-                <div class="card">
-                    <h1>10</h1>
-                    <p>Técnicos de Enfermagem</p>
-                </div class="card">
-                <div class="card">
-                    <h1>10</h1>
-                    <p>Nutricionista</p>
-                </div>
-                <div class="card">
-                    <h1>2</h1>
-                    <p>Enfermeiros</p>
-                </div>
-                <div class="card">
-                    <h1>10</h1>
-                    <p>Fisioterapeutas</p>
-                </div>
-                <div class="card">
-                    <h1>10</h1>
-                    <p>Fonoaudiólogo</p>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -113,11 +95,11 @@
                     <div class="bar-pair">
                         <div class="group-item">
                             <label class="bar-label entrada-bar-label">{{ entradas_por_dia[i] }}</label>
-                            <div class="bar entrada-bar" style="height: {{ entradas_por_dia[i] * 5 + 5 }}%;"></div>
+                            <div class="bar entrada-bar" style="height: {{ (entradas_por_dia[i] * 5) + 5 }}%;"></div>
                         </div>
                         <div class="group-item">
                             <label class="bar-label saida-bar-label">{{ saidas_por_dia[i] }}</label>
-                            <div class="bar saida-bar" style="height: {{ saidas_por_dia[i] * 5 + 5 }}%;"></div>
+                            <div class="bar saida-bar" style="height: {{ (saidas_por_dia[i] * 5) + 5 }}%;"></div>
                         </div>
                     </div>
                     <span>{{ dias_semana[i] }} {{ dias_datas[i] }}</span>

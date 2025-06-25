@@ -6,15 +6,12 @@
     <title>{% block title %}SAPS Sense{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="/static/img/logo-simbolo-white.svg">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- CSS Global -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
-    <!-- CSS adicional por página -->
     {% block head %}{% endblock %}
 </head>
 
@@ -23,14 +20,13 @@
     {% if current_user.is_authenticated %}
         {% include './navbar.html' %}
     {% endif %}
-    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-container">
                 {% for category, message in messages %}
                     <div class="flash-message {{ category }}">
                         <div class="flash-content">
-                            <label>{{ message }}</span>
+                            <span>{{ message }}</span>
                             <button onclick="this.parentElement.parentElement.remove()">&times;</button>
                         </div>
                     </div>
@@ -48,14 +44,6 @@
                 msg.style.transform = 'translateX(100%)';
                 setTimeout(() => msg.remove(), 300);
             });
-
-            setTimeout(() => {
-                const content = document.querySelector('.flash-container');
-                if (content) {
-                    content.remove();
-                }
-            }, 600);
-
         }, 5000);
     </script>
 
@@ -69,4 +57,3 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>
-
