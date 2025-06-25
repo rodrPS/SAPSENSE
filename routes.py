@@ -253,9 +253,17 @@ def atualizar_paciente(id):
     form = InternacaoForm()
     internacao = Internacao.query.get_or_404(id)
     paciente = internacao.paciente
-    saps_score = internacao.saps_score or 0
-    mortalidade_estimada = internacao.mortalidade_estimada or 0.0
+    dados_exibicao = {
+        'nome': paciente.nome,
+        'data_nascimento': paciente.data_nascimento.strftime("%d/%m/%Y"),
+        'leito': internacao.leito,
+        'procedencia': internacao.procedencia,
+        'data_admissao': internacao.data_admissao.strftime("%d/%m/%Y"),
+        'reinternacao': "Sim" if internacao.reinternacao else "Não",
+        'saps_score' : internacao.saps_score or 0,
+        'mortalidade_estimada' : internacao.mortalidade_estimada or 0.0
 
+    }
     if form.validate_on_submit():
         try:
             atualizar_internacao_com_formulario(form)
@@ -266,28 +274,24 @@ def atualizar_paciente(id):
         html = render_template('pacientes/modal_editar.html',
                                form=form,
                                internacao_id=internacao.id,
-                               saps_score=saps_score,
-                               mortalidade_estimada=mortalidade_estimada)
+                               dados_exibicao=dados_exibicao)
         return jsonify(success=False, html=html)
 
     # GET
     form.id.data = internacao.id
-    form.nome.data = paciente.nome
-    form.data_nascimento.data = paciente.data_nascimento.strftime("%d/%m/%Y")
-    form.leito.data = internacao.leito
-    form.procedencia.data = internacao.procedencia
-    form.data_admissao.data = internacao.data_admissao.strftime("%d/%m/%Y")
-    form.reinternacao.data = "sim" if internacao.reinternacao else "nao"
     form.diagnostico_atual.data = internacao.diagnostico_atual or ""
     form.data_desfecho.data = internacao.data_desfecho
     form.desfecho.data = internacao.desfecho or ""
     form.destino.data = internacao.destino or ""
+    if internacao.lpp_alta is not None:
+        form.lpp_alta.data = "sim" if internacao.lpp_alta else "nao"
+    if internacao.lpp_admissao is not None:
+        form.lpp_admissao.data = "sim" if internacao.lpp_admissao else "nao"
 
     html = render_template('pacientes/modal_editar.html',
                            form=form,
                            internacao_id=internacao.id,
-                           saps_score=saps_score,
-                           mortalidade_estimada=mortalidade_estimada)
+                           dados_exibicao=dados_exibicao)
     return html
 
 @auth_bp.route('/atribuir-responsavel', methods=['POST'])
@@ -323,20 +327,11 @@ def admin():
         if User.query.filter_by(username=form.username.data).first():
             return jsonify({'message': 'Nome de usuário já está em uso.'}), 400
 
-        # Salvar imagem (se enviada)
-        foto_filename = None
-        if form.foto_perfil.data:
-            filename = secure_filename(form.foto_perfil.data.filename)
-            foto_path = os.path.join('static/uploads', filename)
-            form.foto_perfil.data.save(foto_path)
-            foto_filename = filename
-
         user = User(
             username=form.username.data,
             nome=form.nome.data,
             tipo=form.tipo.data,
-            email=form.email.data,
-            foto_perfil=foto_filename
+            email=form.email.data
         )
         user.set_password(form.senha.data)
         db.session.add(user)

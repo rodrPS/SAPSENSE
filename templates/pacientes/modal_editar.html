@@ -6,47 +6,44 @@
           <img src="{{ url_for('static', filename='img/calculator.svg') }}" alt="Mortalidade Icon">
           Resultado do SAPS 3
         </h2>
-        <div class="valor">{{ saps_score }} <span style="font-size: 16px; font-weight: normal;">pontos</span></div>
-      </div>
-      <div class="mortalidade">
-        <h2>Chance de Mortalidade</h2>
-        <div class="valor">{{ "%.0f"|format(mortalidade_estimada) }}%</div>
-      </div>
-    </div>
-    <form method="POST" action="{{ url_for('auth.atualizar_paciente', id=internacao_id) }}">
-      {{ form.hidden_tag() }}
+        <div class="valor">{{ dados_exibicao.saps_score }} <span style="font-size: 16px; font-weight: normal;">pontos</span></div>
+            </div>
+            <div class="mortalidade">
+                <h2>Chance de Mortalidade</h2>
+                <div class="valor">{{ "%.0f"|format(dados_exibicao.mortalidade_estimada) }}%</div>
+            </div>
+            </div>
+            <form method="POST" action="{{ url_for('auth.atualizar_paciente', id=internacao_id) }}">
+            {{ form.hidden_tag() }}
 
-      <div class="form-card form-card-modal">
-        <div class="form-group">
-          {{ form.nome.label }} {{ form.nome }}
-        </div>
-        <div class="form-group">
-          {{ form.data_nascimento.label }} {{ form.data_nascimento }}
-        </div>
-      </div>
+            <div class="form-card form-card-modal">
+                <div class="form-group">
+                    <label>Nome do Paciente</label>
+                    <input type="text" class="form-control" value="{{ dados_exibicao.nome }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Data de Nascimento</label>
+                    <input type="text" class="form-control" value="{{ dados_exibicao.data_nascimento }}" disabled>
+                </div>
+            </div>
 
-      <div class="form-card form-card-modal">
-        <div class="form-group">
-          {{ form.procedencia.label }} {{ form.procedencia }}
+        <div class="form-card form-card-modal">
+            <div class="form-group">
+                <label>Procedência</label>
+                <input type="text" class="form-control" value="{{ dados_exibicao.procedencia }}" disabled>
+            </div>
+            <div class="form-group">
+                <label>Data de Admissão</label>
+                <input type="text" class="form-control" value="{{ dados_exibicao.data_admissao }}" disabled>
+            </div>
         </div>
-        <div class="form-group">
-          {{ form.data_admissao.label }} {{ form.data_admissao }}
-        </div>
-      </div>
 
-      <div class="form-card form-card-modal">
-        <div class="form-group-radio">
-          <p>{{ form.reinternacao.label.text }}</p>
-          <div class="form-group-radio-items">
-            {% for subfield in form.reinternacao %}
-              <label class="custom-radio">{{ subfield() }} {{ subfield.label.text }}</label>
-            {% endfor %}
-          </div>
-          {% for error in form.reinternacao.errors %}
-            <small class="text-danger">{{ error }}</small>
-          {% endfor %}
+        <div class="form-card form-card-modal">
+            <div class="form-group">
+                <label>Reinternação em menos de 24h?</label>
+                <input type="text" class="form-control" value="{{ dados_exibicao.reinternacao }}" disabled>
+            </div>
         </div>
-      </div>
 
       <!-- ✏️ Campos editáveis -->
       <div class="form-card form-card-modal">

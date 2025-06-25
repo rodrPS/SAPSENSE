@@ -31,4 +31,3 @@ class RegisterForm(FlaskForm):
         DataRequired(),
         Length(min=8),
     ])
-    foto_perfil = FileField('Foto de Perfil (opcional)', validators=[FileAllowed(['jpg', 'png'], 'Apenas imagens JPG/PNG')])

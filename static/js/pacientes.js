@@ -36,38 +36,51 @@ function abrirModalPaciente(internacaoId) {
     .then(html => {
       document.getElementById("modalPacienteContainer").innerHTML = html;
       document.getElementById("modalPaciente").style.display = "flex";
-
-      setTimeout(() => {
-        document.querySelectorAll('input[name="reinternacao"]').forEach(radio => {
-          radio.disabled = true;
-        });
-
-        const form = document.querySelector('#modalPaciente form');
-        form.addEventListener('submit', function (e) {
-          e.preventDefault();
-
-          const formData = new FormData(form);
-
-          fetch(form.action, {
-            method: 'POST',
-            body: formData
-          })
-            .then(response => response.json())
-            .then(data => {
-              if (data.success) {
-                location.reload();
-              } else if (data.html) {
-                document.getElementById("modalPacienteContainer").innerHTML = data.html;
-                abrirModalPaciente(internacaoId); // reabre modal com erros
-              } else if (data.error) {
-                alert("Erro: " + data.error);
-              }
-            });
-        });
-      }, 100);
+      aplicarEventosModal(internacaoId); // <- Aplica os eventos separadamente
     });
 }
 
-  function fecharModal() {
-    document.getElementById("modalPaciente").style.display = "none";
-  }
+function aplicarEventosModal(internacaoId) {
+  setTimeout(() => {
+    // Campos readonly
+    document.querySelectorAll('input[name="reinternacao"]').forEach(radio => {
+      radio.disabled = true;
+    });
+
+    // Submit AJAX
+    const form = document.querySelector('#modalPaciente form');
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              fecharModal();
+              location.reload();
+            } else if (data.html) {
+              document.getElementById("modalPacienteContainer").innerHTML = data.html;
+              aplicarEventosModal(internacaoId); // reativa os eventos no novo conteúdo
+            } else if (data.error) {
+              alert("Erro: " + data.error);
+            }
+          })
+          .catch(error => {
+            console.error("Erro:", error);
+            alert("Erro ao enviar os dados.");
+          });
+      });
+    }
+  }, 100);
+}
+
+function fecharModal() {
+  document.getElementById("modalPaciente").style.display = "none";
+}

@@ -25,14 +25,9 @@
   </ul>
 
   <div class="navbar-user" onclick="toggleDropdown()">
-    {% if current_user.foto_perfil %}
-        <img src="{{ url_for('static', filename='uploads/' + current_user.foto_perfil) }}"
-            class="user-avatar" alt="Foto do usuário">
-    {% else %}
-        <div class="user-avatar user-initials">
-        {{ current_user.nome[0] }}{{ current_user.nome.split(' ')[-1][0] }}
-        </div>
-    {% endif %}
+    <div class="user-avatar user-initials">
+    {{ current_user.nome[0] }}{{ current_user.nome.split(' ')[-1][0] }}
+    </div>
     <div class="user-info">
       <strong>{{ current_user.nome }}</strong>
       <small>{{ current_user.username }}</small>

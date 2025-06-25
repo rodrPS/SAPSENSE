@@ -37,7 +37,6 @@
                     <th>Nome</th>
                     <th>Tipo de Usuário</th>
                     <th>Email</th>
-                    <th>Foto de Perfil</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,13 +45,6 @@
                     <td>{{ user.nome }}</td>
                     <td>{{ user.tipo }}</td>
                     <td>{{ user.email }}</td>
-                    <td>
-                        {% if user.foto_perfil %}
-                            <button class="btn-primary atribuir">Alterar Foto</button>
-                        {% else %}
-                            <button class="btn-primary atribuir">Inserir Foto</button>
-                        {% endif %}
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -97,11 +89,6 @@
         <div class="form-group">
             {{ form.senha.label }} {{ form.senha }}
         </div>
-
-        <div class="form-group">
-            {{ form.foto_perfil.label }} {{ form.foto_perfil }}
-        </div>
-
     </form>
     <div class="modal-actions">
       <button onclick="fecharModal()" class="btn-secondary">Cancelar</button>
